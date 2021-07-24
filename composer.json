@@ -1,0 +1,19 @@
+{
+    "name": "flikimax/wp-framework",
+    "description": "Framework desarrollado para el CMS WordPress que hace uso del patr\u0000n de arquitectura mvc (modelo-vista-controlador), esto con la intensi\u0000n de ayudar y disminuir el tiempo de desarrollo de sistemas.",
+    "type": "framework",
+    "license": "GPL-3.0",
+    "autoload": {
+        "psr-4": {
+            "Fw\\": "Fw/",
+            "App\\": "App/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Flikimax",
+            "email": "flikimax@gmail.com"
+        }
+    ],
+    "require": {}
+}

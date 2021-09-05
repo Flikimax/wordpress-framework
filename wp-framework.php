@@ -2,20 +2,22 @@
 /*
 @wordpress-plugin
 Plugin Name:    Wp Framework 
-Plugin URI:     github.com/Flikimax/Wp-Framework
-Description:    Framework mvc (model-view-controller) desarrollado con la intensión de ayudar y disminuir el tiempo de desarrollo de sistemas.
+Plugin URI:     
+Description:    
 Version:        0.1
-Author:         Flikimax     
-Author URI:     flikimax.com
+
+License: GPLv3 or later
 */
 
 if (!defined('ABSPATH')) {
 	exit;
 }
 
-require __DIR__ . '/vendor/autoload.php';
-define('FW_PREFIX', 'fw_');
+define('WPFW_PATH', __DIR__);
+define('WPFW_VERSION', '20210829');
 
+# SE CARGA EL AUTOLOAD DEL FRAMEWORK
+require __DIR__ . '/vendor/autoload.php';
 
 
 

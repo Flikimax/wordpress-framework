@@ -6,7 +6,7 @@
     "autoload": {
         "psr-4": {
             "Fw\\": "Fw/",
-            "App\\": "App/"
+            "FwApp\\": "App/"
         }
     },
     "authors": [

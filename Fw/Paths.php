@@ -1,6 +1,6 @@
 <?php
 /**
- * Clase encargada de las rutas
+ * Clase encargada de las rutas.
  * 
  */
 
@@ -16,10 +16,10 @@ class Paths
     }
 
     /**
-     * Construye una ruta con el separador de directorio apropiado
+     * Construye una ruta con el separador de directorio apropiado.
      *
-     * @param String $segments,... Número ilimitado de segmentos de ruta
-     * @return String Path
+     * @param string $segments,... Número ilimitado de segmentos de ruta
+     * @return string Path
      **/
     public static function buildPath(string ...$segments) : string
     {
@@ -27,60 +27,45 @@ class Paths
     }
 
     /**
-     * Crear una carpeta en una ruta especifica
+     * Crea y retorna el namespace usando basename del path pasado.
      *
-     * @param String $path Ruta del directorio
-     * @param Int $permissions Permisos para el directorio
-     * @return Void
+     * @param string $name Ruta|Nombre para retornar para usar como namespace.
+     * @return string
      **/
-    public static function createFolder(string $path, int $permissions) : void
+    public static function createNamepace(string $name) : string 
     {
-        $old_umask = umask(0);
-        mkdir($path, $permissions);
-        umask($old_umask);
+        $namespace = basename($name, '.php');
+        $namespace = ucwords($namespace, '-');
+        $namespace = str_replace('-', '', $namespace);
+
+        return $namespace;
     }
 
     /**
-     * Crear un file en una ruta especifica
+     * Recorta una ruta determinados niveles
      *
-     * @param String $path Ruta del directorio
-     * @param String $content contenido para el file
-     * @return Mixes
+     * @param string $path
+     * @param int $levels
+     * @return string
      **/
-    public static function createFile(string $path, string $content)
+    public static function trimPath(string $path, int $levels)
     {
-        # Se crea el archivo si no existe
-        $file = fopen($path, "w+b");
-        if ( $file == false ) {
-            echo "Error al crear el archivo: " . basename($path);
-        } else {
-            # Se escribe el contenido
-            fwrite($file, $content);
-            # Fuerza a que se escriban los datos pendientes en el buffer
-            fflush($file);
+        $path = explode(DIRECTORY_SEPARATOR, $path);
+        if ( $levels <= 0 || $levels > count($path) ) {
+            return implode(DIRECTORY_SEPARATOR, $path);
         }
-        # Cerrar el archivo
-        fclose($file);
-    }
 
-    /**
-     * Copia un file en una ruta especifica
-     *
-     * @param String $file Ruta del file que se copiara
-     * @param String $copy Ruta para el nuevo file
-     * @return Mixes
-     **/
-    public static function copyFile(string $file, string $copy)
-    {
-        if ( !copy($file, $copy) ) {
-            echo "Error al copiar: $file";
+        for ($i=0; $i < $levels; $i++) { 
+            array_pop($path);
         }
+
+        return implode(DIRECTORY_SEPARATOR, $path);
     }
 
     /**
-     * Se establecen las rutas de la App
+     * Se establecen las rutas de la App.
      * 
-     * @return Void
+     * @return void
      **/
     public function setPaths() : void
     {
@@ -89,9 +74,13 @@ class Paths
 
         $this->assets = self::buildPath($this->app, 'assets');
         $this->adminAssets = self::buildPath($this->assets, 'admin');
-        
-        // $this->controllers = self::buildPath($this->pluginPath, 'app', 'assets', 'admin');
-        
+
+        $this->controllers = (object) [
+            'public' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Web'),
+            'menuPage' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'MenuPage'),
+            'shortcode' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'shortcode'),
+        ];
+
         $this->helpers = self::buildPath($this->app, 'helpers');
     }
 }

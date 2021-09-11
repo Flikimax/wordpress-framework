@@ -1,19 +1,17 @@
 <?php
 /**
- * Clase principal del Framework
+ * Clase principal del Framework.
  * 
- * Carga las rutas
- * Setea los argumentos
- * Valida, crea y carga el autoload de la aplicación
- * Procesos iniciales
+ * Carga las rutas.
+ * Setea los argumentos.
+ * Construcción de estrucruas.
+ * Procesos iniciales.
  * 
  */
 
 namespace Fw;
 
 use Fw\Paths;
-use Fw\Autoload;
-use Fw\Init\LoadAssets;
 
 class Framework  
 { 
@@ -22,86 +20,50 @@ class Framework
 
     public function __construct (string $pluginFilePath, array $args = array())
     { 
-        # Rutas de la aplicacion
+        # Rutas de la aplicacion.
         $this->paths = new Paths($pluginFilePath);
-        # Se establecen argumentos que seran utilizados para extension del Framework
+        # Se establecen argumentos que seran utilizados para extension del Framework.
         $this->args = $this->setArguments($args);
 
-        # Validación y generador del autoload de la App
-        $this->appAutoload();
+        # Creación de estructuras.
+        Structures\BuildStructures::init(['autoload', 'app'], [
+            'mode' => $this->args['mode'],
+            'autoload' => $this->args['autoload'],
+            'pluginPath' => $this->paths->pluginPath,
+        ]);
         
         # Se carga el autoload del plugin
         include_once ( Paths::buildPath($this->paths->pluginPath, 'autoload', 'autoload.php') );
 
-        $this->init();
-    }
-
-
-    /**
-     * Procesos iniciales del framework y la aplicacion
-     *
-     * @return Void
-     **/
-    public function init() : void
-    {
-        # Cargar assets 
-        $this->loadAssets();
-        
-        // add_action('init', [new Init($this->paths), 'init']);
-    }
-
-    /**
-     * Carga los assets (css y js) publicos y admin
-     *
-     * @return Void
-     **/
-    public function loadAssets() : void
-    {
-        # Cargar assets admin
-        if (is_admin()) {
-            new LoadAssets($this->args['loadAssets']['admin']);
-        } else {
-            new LoadAssets($this->args['loadAssets']['public']);
-        }
-    }
-
-    /**
-     * Generador del autoload de la App
-     *
-     * @return Void
-     **/
-    public function appAutoload() : void
-    {
-        Autoload::buildAutoload([
-            'composerPath' => Paths::buildPath($this->paths->pluginPath, 'autoload'),
-            'uniqueName' => $this->args['autoload']['uniqueName'],
-            'autoload' => [
-                'psr-4' => $this->args['autoload']['psr-4'],
-                'files' => $this->args['autoload']['files']
-            ],
-            'mode' => $this->args['mode']
+        new Init($this->paths, [
+            'loadAssets' => $this->args['loadAssets'],
+            'routing' => $this->args['routing'],
         ]);
     }
-    
+
+
     /**
-     * Se establecen los argumentos de la App
-     * Esto permitira implementar a futuro configuraciones de la App
+     * Se establecen los argumentos de la App.
+     * Esto permitira implementar a futuro configuraciones de la App.
      *
-     * @param Array $args
-     * @return Array
+     * @param array $args
+     * @return array
      **/
     public function setArguments(array $args) : array
     {
-        $mode = array_key_exists('mode', $args) ? $args['mode'] : 'production';
+        $mode = array_key_exists('mode', $args) ? $args['mode'] : 'dev';
 
         return array_replace_recursive( array(
             'mode' => $mode,
             'autoload' => array(
-                'uniqueName' => Autoload::createUniqueName(basename($this->paths->pluginFilePath)),
+                'uniqueName' => Structures\Autoload::createUniqueName(basename($this->paths->pluginFilePath)),
                 'psr-4' => [
-                    Autoload::createNamepace($this->paths->pluginFilePath) . "\\" => 'app/',
+                    Paths::createNamepace($this->paths->pluginFilePath) . "\\" => 'app/',
                 ],
                 'files' => $this->listHelperFiles(),
+            ),
+            'routing' => array(
+                'force' => false,
             ),
             'loadAssets' => array(
                 'admin' => [
@@ -128,9 +90,9 @@ class Framework
     }
 
     /**
-     * Lista en un array los archivos helpers de la aplicación
+     * Lista en un array los archivos helpers de la aplicación.
      *
-     * @return Array
+     * @return array
      **/
     public function listHelperFiles() : array
     {   # Archivos para autocargar

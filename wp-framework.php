@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 }
 
 define('WPFW_PATH', __DIR__);
-define('WPFW_VERSION', '20210829');
+define('WPFW_VERSION', '20210906');
 
 # SE CARGA EL AUTOLOAD DEL FRAMEWORK
 require __DIR__ . '/vendor/autoload.php';

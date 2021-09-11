@@ -12,18 +12,6 @@ class LoadAssets
 {
     public array $args;
 
-    /**
-     * @param Type $args Recibe un array de la siguiente forma: 
-     * 
-     * array (
-     * 'is_admin' => true, // optional
-     * 'load' => 'all|css|js',
-     * 'mode' => 'dev|production',
-     * 'path' => $path,
-     * 'argsJs' => array(), // optional
-     * );
-     *
-     **/
     public function __construct(array $args) 
     {
         $this->args = $args;
@@ -36,9 +24,9 @@ class LoadAssets
     }
 
     /**
-     * Determina si se debe cargar todo o un conjunto de assets en especifico
+     * Determina si se debe cargar todo o un conjunto de assets en especifico.
      *
-     * @return Void
+     * @return void
      **/
     public function loadAsset() : void
     {
@@ -65,10 +53,10 @@ class LoadAssets
     }
 
     /**
-     * Carga todos los assets (js y css)
+     * Carga todos los assets (js y css).
      *
-     * @param Array $args Recibe el mismo array que el constructor, esto para un uso desaclopado
-     * @return Void
+     * @param array $args Recibe el mismo array que el constructor, esto para un uso desaclopado.
+     * @return void
      **/
     public static function loadAll(array $args)
     {
@@ -87,40 +75,40 @@ class LoadAssets
     }
 
     /**
-     * Carga los archivos js
+     * Carga los archivos js.
      *
-     * @param Array $args 
+     * @param array $args 
      * array (
      * 'path' => $args['path'],
      * 'argsJs' => $args['argsJs'], // optional
      * 'mode' => $args['mode']
      * )
      * 
-     * @return Void
+     * @return void
      **/
     public static function loadJs(array $args) : void
     {
-        # SE OBTIENE EL ARRAY CON LAS RUTAS DE LOS ARCHIVOS
+        # Se obtiene el array con las rutas de los archivos
         if ( !$fileList = self::validateFiles(Paths::buildPath($args['path'], 'js'), 'js') ) {
             return;
         }
 
-        # VALIDACION DE DATOS Y RETORNO DE LA VERSION
+        # Validación de datos y retorno de la version
         if ( !$version = self::preloadValidation($fileList, $args)) {
             return;
         }
         
-        # VALIDACIÓN DE LOS PARAMETROS A ENVIAR A LOS JS
+        # Validación de los parametros a enviar a los js
         if ( !array_key_exists('argsJs', $args) ) {
             $args['argsJs'] = false;
         }
 
-        # SI CARGAR EN FOOTER
+        # Si cargar en el footer
         if ( !array_key_exists('in_footer', $args) ) {
             $args['in_footer'] = false;
         }
         
-        # REGISTRO
+        # Registro
         $pluginPath = Paths::buildPath('wp-content', 'plugins');
         foreach ($fileList as $js) {
             $appPath = strstr($js, $pluginPath);
@@ -147,29 +135,29 @@ class LoadAssets
     }
 
      /**
-     * Carga los archivos css
+     * Carga los archivos css.
      *
-     * @param Array $args 
+     * @param array $args 
      * array (
      * 'path' => $args['path'],
      * 'mode' => $args['mode']
      * )
      * 
-     * @return Void
+     * @return void
      **/
     public static function loadCss(array $args) : void
     {
-        # SE OBTIENE EL ARRAY CON LAS RUTAS DE LOS ARCHIVOS
+        # Se obtiene el array con las rutas de los archivos
         if ( !$fileList = self::validateFiles(Paths::buildPath($args['path'], 'css'), 'css') ) {
             return;
         }
 
-        # VALIDACION DE DATOS Y RETORNO DE LA VERSION
+        # Validación de datos y retorno de la version
         if ( !$version = self::preloadValidation($fileList, $args)) {
             return;
         }
 
-        # REGISTRO
+        # Registro
         $pluginPath = Paths::buildPath('wp-content', 'plugins');
         foreach ($fileList as $css) {
             $appPath = strstr($css, $pluginPath);
@@ -188,10 +176,10 @@ class LoadAssets
 
 
     /**
-     * Validación de datos y retorno de la versión a utilizar por los assets
+     * Validación de datos y retorno de la versión a utilizar por los assets.
      *
-     * @param Array $fileList Array con los paths de los assets
-     * @param Array $args Array con el modo a correr
+     * @param array $fileList Array con los paths de los assets
+     * @param array $args Array con el modo a correr
      * @return Mixes
      **/
     public static function preloadValidation($fileList, $args)
@@ -211,16 +199,15 @@ class LoadAssets
     }
 
     /**
-     * Valida que existan archivos dentro de la ruta pasada
+     * Valida que existan archivos dentro de la ruta pasada.
      *
-     * @param String $path Ruta a validar
-     * @param String $type Tipo de archivo a buscar, ejemplo: 'js'
+     * @param string $path Ruta a validar
+     * @param string $type Tipo de archivo a buscar, ejemplo: 'js'
      * @return Mixes
      **/
     public static function validateFiles(string $path, string $type)
     {
         if ( file_exists($path) ) {
-            # CARGAR JS
             if ( $fileList = glob( Paths::buildPath($path, "*.$type")) ) {
                 return $fileList;
             }
@@ -231,9 +218,9 @@ class LoadAssets
 
     
     /**
-     * Modo desarrollo, se retorna time() para mantener actualizada la versión de los scrips
+     * Modo desarrollo, se retorna time() para mantener actualizada la versión de los scrips.
      *
-     * @return Int
+     * @return int
      **/
     public static function devMode() : int
     {
@@ -241,9 +228,9 @@ class LoadAssets
     }
 
     /**
-     * Modo producción, se WPFW_VERSION para mantener fija la versión de los scrips
+     * Modo producción, se WPFW_VERSION para mantener fija la versión de los scrips.
      *
-     * @return Int
+     * @return int
      **/
     public static function productionMode() : int
     {

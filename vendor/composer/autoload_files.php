@@ -6,5 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    '76054566f0b5965db23fc2de307f2962' => $baseDir . '/Fw/helpers/assets.php',
+    'a799ff867577b4369518915061ff9ba3' => $baseDir . '/Fw/helpers/general.php',
     '0c5f505174dc65b71587c154c1bb2082' => $baseDir . '/Fw/helpers/views.php',
 );

@@ -6,9 +6,11 @@
     "autoload": {
         "psr-4": {
             "Fw\\": "Fw/",
-            "FwApp\\": "App/"
+            "WpFw\\": "app/"
         }, 
         "files": [
+            "Fw/helpers/assets.php",
+            "Fw/helpers/general.php",
             "Fw/helpers/views.php"
         ]
     },

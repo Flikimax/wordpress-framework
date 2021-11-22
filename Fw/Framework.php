@@ -12,10 +12,13 @@
 namespace Fw;
 
 use Fw\Paths;
+use Fw\Init\Init;
 
 class Framework  
 { 
+    /** @var Paths $paths Objecto de rutas de la aplicación. */
     public object $paths;
+    /** @var array $args Argumentos (setting) de la aplicación. */
     protected array $args;
 
     public function __construct (string $pluginFilePath, array $args = array())
@@ -26,15 +29,18 @@ class Framework
         $this->args = $this->setArguments($args);
 
         # Creación de estructuras.
-        Structures\BuildStructures::init(['autoload', 'app'], [
+        Structures\BuildStructures::init(['autoload'], [
             'mode' => $this->args['mode'],
             'autoload' => $this->args['autoload'],
             'pluginPath' => $this->paths->pluginPath,
         ]);
         
         # Se carga el autoload del plugin
-        include_once ( Paths::buildPath($this->paths->pluginPath, 'autoload', 'autoload.php') );
+        if ( file_exists($appAutoload = Paths::buildPath($this->paths->pluginPath, 'autoload', 'autoload.php')) ) {
+            include_once $appAutoload;
+        }
 
+        # Procesos iniciales
         new Init($this->paths, [
             'loadAssets' => $this->args['loadAssets'],
             'routing' => $this->args['routing'],
@@ -52,7 +58,6 @@ class Framework
     public function setArguments(array $args) : array
     {
         $mode = array_key_exists('mode', $args) ? $args['mode'] : 'dev';
-
         return array_replace_recursive( array(
             'mode' => $mode,
             'autoload' => array(
@@ -60,7 +65,7 @@ class Framework
                 'psr-4' => [
                     Paths::createNamepace($this->paths->pluginFilePath) . "\\" => 'app/',
                 ],
-                'files' => $this->listHelperFiles(),
+                'files' => Paths::listFiles($this->paths->pluginPath, Paths::buildPath($this->paths->helpers), '*.php'),
             ),
             'routing' => array(
                 'force' => false,
@@ -82,6 +87,9 @@ class Framework
                     'path' => $this->paths->assets,
                     'argsJs' => [
                         'ajaxurl' => admin_url('admin-ajax.php')
+                    ],
+                    'frameworks' => [
+                        'bootstrap' => true
                     ],
                     'in_footer' => false
                 ]

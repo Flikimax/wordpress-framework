@@ -1,0 +1,132 @@
+.wpfw-layout {
+    width: 100%;
+    margin: 30px 0;
+}
+
+.wpfw-layout h1 {
+    word-break: break-all;
+    line-height: 1.3em;
+}
+
+
+.wpfw-error-404 .wpfw-error-content,
+.wpfw-error-404 .wpfw-error-img
+{
+    vertical-align: middle;
+    display: inline-block;
+    width: 44%;
+}
+
+.wpfw-error-404 .wpfw-error-content {
+    padding: 3.5em;
+}
+
+.wpfw-error-404 .wpfw-error-content h2 {
+    font-size: 7em;
+    font-weight: bold;
+    color: #263238;
+}
+
+.wpfw-error-404 .wpfw-error-content p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+.wpfw-error-404 .wpfw-error-link a {
+    font-weight: bold;
+
+    padding: 10px 20px;
+    border-radius:5px;
+    color: #fff;
+    background-color: #407BFF;
+}
+
+.wpfw-error-404 .wpfw-error-img {
+    text-align: center;
+}
+
+.wpfw-error-404 .wpfw-error-img img {
+    width: 70%;
+    height: auto;
+}
+
+
+
+/* FORMULARIO */
+.wpfw-layout .fw-form-create-plugin {
+    margin-top: 30px;
+    /* text-align: center; */
+}
+
+.fw-form-create-plugin .input-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.fw-form-create-plugin .input-container label,
+.fw-form-create-plugin .input-container input
+{
+    display: block;
+}
+
+.fw-form-create-plugin .input-container label {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.fw-form-create-plugin .input-container input {
+    margin: auto;
+    width: 70%;
+    background: transparent;
+    border-radius: unset;
+    border: none;
+    border-bottom: solid 1px #b1b1b1;
+}
+
+.fw-form-create-plugin .input-container button {
+    background: #407BFF;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.3em;
+    font-weight: bold;
+    border: none; 
+    cursor: pointer;
+}
+.fw-form-create-plugin .input-container button:hover {
+    background: #2252b9;
+}
+
+/* FORMULARIO */
+
+
+
+
+@media screen and (max-width: 991px) {
+    .wpfw-error-404 .wpfw-error-content,
+    .wpfw-error-404 .wpfw-error-img
+    {
+        display: block;
+        width: 100%;
+    }
+
+    .wpfw-error-404 .wpfw-error-img {
+        display: none;
+    }
+
+    .wpfw-error-404 .wpfw-error-content {
+        padding: 0;
+    }
+
+    /* FORMULARIO */
+    .fw-form-create-plugin .input-container input {
+        margin: auto;
+        width: 90%;
+        background: transparent;
+        border-radius: unset;
+        border: none;
+        border-bottom: solid 1px #b1b1b1;
+    }
+    /* FORMULARIO */
+}

@@ -8,6 +8,7 @@ namespace Fw;
 
 class Paths  
 {
+    /** @var string $pluginFilePath Ruta del archivo principal de la aplicación. */
     public string $pluginFilePath;
 
     public function __construct($pluginFilePath) {
@@ -34,11 +35,34 @@ class Paths
      **/
     public static function createNamepace(string $name) : string 
     {
+        // $namespace = basename($name, '.php');
+        // $namespace = ucwords($namespace, '-');
+        // $namespace = str_replace('-', '', $namespace);
+
         $namespace = basename($name, '.php');
         $namespace = ucwords($namespace, '-');
+        $namespace = str_replace(' ', '', $namespace);
         $namespace = str_replace('-', '', $namespace);
 
         return $namespace;
+    }
+
+    /**
+     * Lista en un array los archivos que esten en la ruta especificada.
+     *
+     * @param string $pluginPath Ruta de la aplicación.
+     * @param string $path Ruta los archivos a listar.
+     * @param string $match Coincidencia para los archivos.
+     * @return array
+     **/
+    public static function listFiles(string $pluginPath, string $path, string $match = '*') : array
+    {   # Archivos para autocargar
+        $files = array();
+        foreach (glob(self::buildPath($path, $match)) as $index => $file) {
+            $file = str_replace($pluginPath, '', $file);
+            $files[] = ltrim($file, '/');
+        }
+        return $files;
     }
 
     /**
@@ -63,6 +87,71 @@ class Paths
     }
 
     /**
+     * Encuentra la ruta raiz de la aplicación.
+     *
+     * @param string $path Cualquier ruta interna de la aplicación.
+     * @return string|null
+     **/
+    public static function findPluginPath(string $path) : ?string
+    {
+        $pluginsPath = self::buildPath('wp-content', 'plugins', '');
+        $pluginPath = strstr($path, $pluginsPath);
+
+        if ( $pluginPath ) {
+            $pluginPath = str_replace($pluginsPath, '', $pluginPath);
+            $pluginPath = explode(DIRECTORY_SEPARATOR, $pluginPath);
+
+            return self::buildPath(WP_PLUGIN_DIR, $pluginPath[0], 'app');
+        }
+
+        return null;
+    }
+
+    /**
+     * Encuentra la ruta raiz de la aplicación (URL).
+     *
+     * @param string $path Cualquier ruta interna de la aplicación.
+     * @return string|null
+     **/
+    public static function findPluginUrl(string $path) : ?string
+    {
+        $path = self::parsePath($path);
+        $pluginsPath = self::buildPath('wp-content', 'plugins', '');
+        $pluginPath = strstr($path, $pluginsPath);
+
+        if ( $pluginPath ) {
+            $pluginPath = str_replace($pluginsPath, '', $pluginPath);
+            $pluginPath = explode(DIRECTORY_SEPARATOR, $pluginPath);
+
+            return plugins_url($pluginPath[0] . '/app');
+        }
+
+        return null;
+    }
+
+    /**
+     * Convierte una ruta o url con su respectivo separador.
+     *
+     * @param string $path Ruta a convertir.
+     * @param string $isUrl Determinará si se usa '/' ó . DIRECTORY_SEPARATOR
+     * @return string
+     **/
+    public static function parsePath(string $path, bool $isUrl = false) : string
+    {
+        $separator = DIRECTORY_SEPARATOR;
+        if ( $isUrl ) {
+            $separator = '/';
+        }
+
+        $path = str_replace('/', $separator, $path);
+        $path = str_replace('\\', $separator, $path);
+
+        return $path;
+    }
+
+    
+
+    /**
      * Se establecen las rutas de la App.
      * 
      * @return void
@@ -77,7 +166,7 @@ class Paths
 
         $this->controllers = (object) [
             'public' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Web'),
-            'menuPage' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'MenuPage'),
+            'menuPages' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'MenuPages'),
             'shortcode' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'shortcode'),
         ];
 

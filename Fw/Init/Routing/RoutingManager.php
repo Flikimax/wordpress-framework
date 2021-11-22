@@ -10,6 +10,7 @@ namespace Fw\Init\Routing;
 use Fw\Paths;
 use Fw\Init\Routing\Route;
 use Fw\Init\Routing\Router;
+use Fw\Init\Request\Request;
 
 class RoutingManager  
 {
@@ -57,8 +58,8 @@ class RoutingManager
                 $controller
             );
             # Propiedades adicionales
-            $routes[$routeKey]->force = self::propertyExists($controller, 'routeForce');
-            $routes[$routeKey]->enableUri = (bool) self::propertyExists($controller, 'enableUri');
+            $routes[$routeKey]->force = Request::propertyExists($controller, 'routeForce');
+            $routes[$routeKey]->enableUri = (bool) Request::propertyExists($controller, 'enableUri');
         }
 
         return $routes;
@@ -81,22 +82,6 @@ class RoutingManager
         }
 
         return '/' . trim($route, '/');
-    }
-
-    /**
-     * Verifica si una propiedad existe.
-     *
-     * @param string $controller
-     * @param string $property
-     * @return null|bool
-     **/
-    public static function propertyExists(string $controller, string $property) : ?bool
-    {
-        if ( property_exists($controller, $property) ) {
-            return (bool) $controller::$$property;
-        }
-
-        return null;
     }
 }
 

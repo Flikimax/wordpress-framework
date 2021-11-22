@@ -30,6 +30,7 @@ class LoadAssets
      **/
     public function loadAsset() : void
     {
+        # Carga de archivos
         switch ($this->args['load']) {
             case 'js':
                 self::loadJs(array (
@@ -42,13 +43,57 @@ class LoadAssets
             case 'css':
                 self::loadCss(array (
                     'path' => $args['path'],
-                    'mode' => $args['mode']
+                    'mode' => $args['mode'],
                 ));
                 break;
             
             default:
                 self::loadAll($this->args);
                 break;
+        }
+
+        # Cargar Frameworks.
+        if ( array_key_exists('frameworks', $this->args) ) {
+            self::loadFrameworks(array (
+                'mode' => $this->args['mode'],
+                'path' => $this->args['path'],
+                'frameworks' => $this->args['frameworks'],
+            ));
+        }
+    }
+
+    /**
+     * Carga los frameworks especificados.
+     *
+     * @param array $args Arreglo con los parámetros.
+     * @return void
+     **/
+    public static function loadFrameworks(array $args)
+    {
+        $handle = basename( Paths::trimPath($args['path'], 2) );
+        $handle = str_replace(' ', '-', $handle);
+
+        # Version.
+        $mode = $args['mode'] . 'Mode';
+        if ( method_exists(static::class, $mode) ) {
+            $version = self::{$mode}();
+        }
+        $version = self::productionMode();
+
+        foreach ($args['frameworks'] as $framework => $enable) {
+            if ( !$enable ) {
+                continue;
+            }
+
+            switch ($framework) {
+                case 'bootstrap':
+                    wp_enqueue_style ( $handle . 'bootstrapCss', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css', array(), $version );
+                    wp_enqueue_script( $handle . 'bootstrapJs', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js', array(), $version) ;
+                    break;
+                
+                default:
+                    break;
+            }
         }
     }
 
@@ -70,10 +115,9 @@ class LoadAssets
         # CARGAR CSS
         self::loadCss(array (
             'path' => $args['path'],
-            'mode' => $args['mode']
+            'mode' => $args['mode'],
         ));
     }
-
     /**
      * Carga los archivos js.
      *
@@ -164,6 +208,7 @@ class LoadAssets
             $path = str_replace($pluginPath, '', $appPath);
 
             $handle = 'wpFw_' . basename($css, '.css');
+
             wp_register_style(
                 $handle, 
                 plugins_url($path),

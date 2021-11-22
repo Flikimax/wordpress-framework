@@ -7,25 +7,30 @@ namespace Composer\Autoload;
 class ComposerStaticInitbfaa91cde92ef7814cb20f734ef796dd
 {
     public static $files = array (
+        '76054566f0b5965db23fc2de307f2962' => __DIR__ . '/../..' . '/Fw/helpers/assets.php',
+        'a799ff867577b4369518915061ff9ba3' => __DIR__ . '/../..' . '/Fw/helpers/general.php',
         '0c5f505174dc65b71587c154c1bb2082' => __DIR__ . '/../..' . '/Fw/helpers/views.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'W' => 
+        array (
+            'WpFw\\' => 5,
+        ),
         'F' => 
         array (
             'Fw\\' => 3,
-            'FwApp\\' => 6,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'WpFw\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
+        ),
         'Fw\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Fw',
-        ),
-        'FwApp\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/App',
         ),
     );
 

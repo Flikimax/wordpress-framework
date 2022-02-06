@@ -11,9 +11,9 @@ use Fw\Init\Response;
 class Request  
 {
     /** @var string $controller Namespace del controlador. */
-    protected $controller;
+    protected string $controller;
     /** @var string $method Método a ejecutar por el controller. */
-    protected $method;
+    protected string $method;
     /** @var string $pluginPath Ruta principal de la aplicación. */
     public string $pluginPath;
 

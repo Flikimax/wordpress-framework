@@ -99,6 +99,7 @@ class Framework
 
     /**
      * Lista en un array los archivos helpers de la aplicación.
+     * Delete.
      *
      * @return array
      **/

@@ -19,12 +19,23 @@ class Paths
     /**
      * Construye una ruta con el separador de directorio apropiado.
      *
-     * @param string $segments,... Número ilimitado de segmentos de ruta
+     * @param string $segments,... Número ilimitado de segmentos de ruta.
      * @return string Path
      **/
     public static function buildPath(string ...$segments) : string
     {
         return join(DIRECTORY_SEPARATOR, $segments);
+    }
+
+    /**
+     * Construye una ruta namespace.
+     *
+     * @param string $segments Número ilimitado de segmentos de ruta.
+     * @return string
+     **/
+    public static function buildNamespacePath(string ...$segments) : string
+    {
+        return join('\\', $segments);
     }
 
     /**
@@ -35,10 +46,6 @@ class Paths
      **/
     public static function createNamepace(string $name) : string 
     {
-        // $namespace = basename($name, '.php');
-        // $namespace = ucwords($namespace, '-');
-        // $namespace = str_replace('-', '', $namespace);
-
         $namespace = basename($name, '.php');
         $namespace = ucwords($namespace, '-');
         $namespace = str_replace(' ', '', $namespace);
@@ -149,8 +156,6 @@ class Paths
         return $path;
     }
 
-    
-
     /**
      * Se establecen las rutas de la App.
      * 
@@ -165,9 +170,9 @@ class Paths
         $this->adminAssets = self::buildPath($this->assets, 'admin');
 
         $this->controllers = (object) [
-            'public' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Web'),
+            'routers' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Routers'),
             'menuPages' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'MenuPages'),
-            'shortcode' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'shortcode'),
+            'shortcodes' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Shortcodes'),
         ];
 
         $this->helpers = self::buildPath($this->app, 'helpers');

@@ -12,6 +12,7 @@
 namespace Fw\Init;
 
 use Fw\Init\MenuPage\MenuPagesManager;
+use Fw\Init\Shortcode\ShortcodesManager;
 use Fw\Init\LoadAssets;
 use Fw\Init\Routing\RoutingManager;
 use Fw\Paths;
@@ -31,7 +32,7 @@ class Init
         # Routing.
         RoutingManager::initialize(
             Paths::createNamepace($this->paths->pluginPath),
-            $this->paths->controllers->public,
+            $this->paths->controllers->routers,
             $this->args['routing']
         );
 
@@ -45,6 +46,8 @@ class Init
      **/
     public function init()
     {
+        add_action('admin_init', [$this, 'adminInit']);
+
         # Menu Pages
         add_action('admin_menu', [
             new MenuPagesManager(
@@ -54,14 +57,17 @@ class Init
             'prepare'
         ]);
 
-        add_action('admin_init', [$this, 'adminInit']);
+        # Shortcodes
+        ShortcodesManager::initialize(
+            Paths::createNamepace($this->paths->pluginPath),
+            $this->paths->controllers->shortcodes,
+        );
     }
 
     public function adminInit()
     {
         
     }
-
 
     /**
      * Carga los assets (css y js) publicos y admin.

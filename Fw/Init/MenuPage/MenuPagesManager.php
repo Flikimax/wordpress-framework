@@ -25,16 +25,6 @@ class MenuPagesManager
     }
 
     /**
-     * Se envian los argumentos para la creación de las (Sub) Menu Page.
-     * 
-     * @return void
-     **/
-    public function createMenuPages() : void
-    {
-        MenuPages::createMenuPages($this->args);
-    }
-
-    /**
      * Prepara el proceso de creación.
      *
      * @return void
@@ -50,9 +40,7 @@ class MenuPagesManager
             return;
         }
         
-        $menuPages = array(
-            'path' => Paths::findPluginPath($this->path)
-        );
+        $menuPages = [];
         foreach ($dirs as $directory) {
             $mainPath = Paths::buildPath($this->path, $directory);
 
@@ -60,8 +48,8 @@ class MenuPagesManager
                 continue;
             }
 
-            # MENU PAGE PRINCIPAL
-            $menuPageKey = array_search(Paths::buildPath($mainPath, "{$directory}Controller.php"), $files); 
+            # Menu Page Principal
+            $menuPageKey = array_search(Paths::buildPath($mainPath, "{$directory}.php"), $files); 
             if ( $menuPageKey ) {
                 $menuPage = $files[$menuPageKey];
                 unset($files[$menuPageKey]);
@@ -71,26 +59,37 @@ class MenuPagesManager
             }
 
             # Menu Page
-            $menuPages[$directory] = $this->prepareMenuPage(self::menuPageNamespace(
-                $this->namespace,
-                $directory,
-                $menuPage
-            ));
+            $menuPages[$directory] = $this->prepareMenuPage(
+                Paths::buildNamespacePath(
+                    $this->namespace, 
+                    'Controllers', 
+                    'MenuPages', 
+                    $directory, 
+                    basename($menuPage, '.php')
+                )
+            );
 
             # Sub Menu Page
             foreach ($files as $file) {
                 $menuPages[$directory]['subMenuPages'][] = $this->prepareMenuPage(
-                    self::menuPageNamespace(
-                        $this->namespace,
-                        $directory,
-                        $file
+                    Paths::buildNamespacePath(
+                        $this->namespace, 
+                        'Controllers', 
+                        'MenuPages', 
+                        $directory, 
+                        basename($file, '.php')
                     ),
-                true);
+                    true
+                );
             }
         }
-        $this->args = $menuPages;
-
-        $this->createMenuPages();
+        
+        if ( count($menuPages) > 0 ) {
+            $menuPages['path'] = Paths::findPluginPath($this->path);
+            $this->args = $menuPages;
+            # Se envian los argumentos para la creación de las (Sub) Menu Page.
+            MenuPages::createMenuPages($this->args);
+        }
     }
 
 
@@ -105,7 +104,6 @@ class MenuPagesManager
     {
         $controllerName = str_replace('\\', '/', $class);
         $controllerName = basename($controllerName);
-        $controllerName = str_replace('Controller', '', $controllerName);
         
         # Page Title
         $menuPage['pageTitle'] = Request::propertyExists($class, 'pageTitle') ? $class::$pageTitle : spaceUpper($controllerName);
@@ -117,8 +115,9 @@ class MenuPagesManager
         $menuPage['capability'] = Request::propertyExists($class, 'capability') ? $class::$capability : 'install_plugins';
 
         # Slug
+        $menuSlug = explode('\\', $class);
         $menuPage['menuSlug'] = Request::propertyExists($class, 'menuSlug') ? $class::$menuSlug : $controllerName;
-        $menuPage['menuSlug'] = strToSlug($menuPage['menuSlug']);
+        $menuPage['menuSlug'] = strToSlug($menuSlug[0]) . '-' . strToSlug($menuSlug[3]) . '-' . strToSlug($menuPage['menuSlug']);
 
         # callable
         $menuPage['callable'] = [
@@ -137,17 +136,4 @@ class MenuPagesManager
         return $menuPage;
     }
 
-    /**
-     * Crea y retorna el namespace de una Menu Page.
-     *
-     * @param string $namespace namespace base de la aplicación.
-     * @param string $directory
-     * @param string $filePath Ruta del controlador.
-     * @return string
-     **/
-    public static function menuPageNamespace(string $namespace, string $directory, string $filePath) : string
-    {
-        $controllerName = basename($filePath, '.php');
-        return "$namespace\\Controllers\MenuPages\\$directory\\$controllerName";
-    }
 }

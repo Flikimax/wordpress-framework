@@ -9,6 +9,7 @@ if (!function_exists('view')) {
      */
     function view($view, $args = null)
     {
+        $view = str_replace('.php', '', $view);
         return new Fw\Init\Response\ResponseView('view', $view, $args);
     }
 }
@@ -26,7 +27,7 @@ if (!function_exists('viewPath')) {
         if ( file_exists( $path = Fw\Paths::BuildPath($pluginPath, 'views', "$view.php")) ) {
             return Fw\Paths::BuildPath($pluginPath, 'views', "$view.php");
         } else if (WP_DEBUG) {
-            echo "<strong>Details:</strong> $view view does not exist. <br>";
+            throw new \Fw\Init\Exceptions\General("Path view: ${view}", 404);
         }
 
         return null;

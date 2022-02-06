@@ -1,6 +1,6 @@
 <?php
 /**
- * Crea una Menu Page o una Sub Menu Page.
+ * Crea las Menu Pages y las Sub Menu Page.
  * 
  */
 
@@ -25,10 +25,12 @@ class MenuPages
         unset($menuPages['path']);
 
         foreach ($menuPages as $name => $args) {
+            $name = spaceUpper($name);
+            
             # Menu Page
             add_menu_page( 
-                $args['pageTitle'], 
-                $args['menuTitle'], 
+                $name,
+                $name,
                 $args['capability'], 
                 $args['menuSlug'], 
                 [new RequestMenuPage(
@@ -39,11 +41,20 @@ class MenuPages
                 $args['icon'], 
                 $args['position']
             );
-
+            add_submenu_page( 
+                $args['menuSlug'],
+                $args['pageTitle'], 
+                $args['menuTitle'], 
+                $args['capability'], 
+                $args['menuSlug'],
+                '',
+                $args['position']
+            );
+            
             # Si cargar Sub Menu Page
             if ( isset($args['subMenuPages']) ) {
                 foreach ($args['subMenuPages'] as $subArgs) {
-                    add_submenu_page( 
+                    add_submenu_page(
                         $args['menuSlug'],
                         $subArgs['pageTitle'], 
                         $subArgs['menuTitle'], 

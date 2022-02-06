@@ -47,7 +47,7 @@ class RoutingManager
 
         foreach (glob(Paths::buildPath($path, '*.php')) as $controller) {
             $controllerName = basename($controller, '.php');
-            $controller = "$routerName\Controllers\Web\\$controllerName";
+            $controller = "$routerName\Controllers\\" . basename($path) . "\\{$controllerName}";
 
             $route = str_replace('Controller', '', $controllerName);
             $routeKey = strtolower($route); 

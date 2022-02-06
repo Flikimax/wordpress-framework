@@ -7,15 +7,15 @@ namespace Composer\Autoload;
 class ComposerStaticInitbfaa91cde92ef7814cb20f734ef796dd
 {
     public static $files = array (
-        '76054566f0b5965db23fc2de307f2962' => __DIR__ . '/../..' . '/Fw/helpers/assets.php',
-        'a799ff867577b4369518915061ff9ba3' => __DIR__ . '/../..' . '/Fw/helpers/general.php',
-        '0c5f505174dc65b71587c154c1bb2082' => __DIR__ . '/../..' . '/Fw/helpers/views.php',
+        'f59669d56395e3551023b7098f6d8dba' => __DIR__ . '/../..' . '/Fw/helpers/assets.php',
+        'ec2dd61954688f8c3e51da99206d21db' => __DIR__ . '/../..' . '/Fw/helpers/general.php',
+        'adad57b39792bf8ea687658285e24658' => __DIR__ . '/../..' . '/Fw/helpers/views.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
-            'WpFw\\' => 5,
+            'WordpressFramework\\' => 19,
         ),
         'F' => 
         array (
@@ -24,7 +24,7 @@ class ComposerStaticInitbfaa91cde92ef7814cb20f734ef796dd
     );
 
     public static $prefixDirsPsr4 = array (
-        'WpFw\\' => 
+        'WordpressFramework\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),

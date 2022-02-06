@@ -32,7 +32,7 @@ class ResponseView extends Response implements ResponseInterface
 
         if ( $viewPath = viewPath($this->pluginPath, $viewName) ) {
             extract($parameters);
-            require_once($viewPath);
+            require($viewPath);
         }
     }
 
@@ -50,7 +50,7 @@ class ResponseView extends Response implements ResponseInterface
 
             ob_start();
             extract($args);
-            require_once $viewPath;
+            require $viewPath;
             return ob_get_clean(); 
         }
 

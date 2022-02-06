@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WpFw\\' => array($baseDir . '/app'),
+    'WordpressFramework\\' => array($baseDir . '/app'),
     'Fw\\' => array($baseDir . '/Fw'),
 );

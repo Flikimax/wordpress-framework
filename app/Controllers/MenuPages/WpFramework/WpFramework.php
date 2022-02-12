@@ -57,7 +57,6 @@ class WpFramework
         
     }
 
-
     /**
      * Página de error 404.
      *

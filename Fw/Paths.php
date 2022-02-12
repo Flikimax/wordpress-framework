@@ -177,5 +177,6 @@ class Paths
 
         $this->helpers = self::buildPath($this->app, 'helpers');
     }
+    
 }
 

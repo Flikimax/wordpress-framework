@@ -47,7 +47,6 @@ class Framework
         ]);
     }
 
-
     /**
      * Se establecen los argumentos de la App.
      * Esto permitira implementar a futuro configuraciones de la App.
@@ -95,22 +94,6 @@ class Framework
                 ]
             ),
         ), $args );
-    }
-
-    /**
-     * Lista en un array los archivos helpers de la aplicación.
-     * Delete.
-     *
-     * @return array
-     **/
-    public function listHelperFiles() : array
-    {   # Archivos para autocargar
-        $files = array();
-        foreach (glob(Paths::buildPath($this->paths->helpers, '*.php')) as $index => $file) {
-            $file = str_replace($this->paths->pluginPath, '', $file);
-            $files[] = ltrim($file, '/');
-        }
-        return $files;
     }
 
 }

@@ -4,7 +4,7 @@
  */
 
 namespace Fw\Init\Exceptions; 
-
+ 
 class General extends \Exception
 {
     /**

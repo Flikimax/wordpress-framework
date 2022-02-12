@@ -1,7 +1,7 @@
 <h1 align="center" style="color: red !important;">Wp Framework</h1>
 
 <p align="center">
-<a href="https://flikimax.com/wp-fw/wordpress-framework.zip" target="_blank"><img src="https://flikimax.com/wp-content/projects/wordpress-framework/download.svg" /></a> <a href="https://github.com/Flikimax/wordpress-framework/blob/main/license.txt" target="_blank"><img src="https://flikimax.com/wp-content/projects/wordpress-framework/license.svg" /></a>
+<a href="https://flikimax.com/wp-content/projects/wordpress-framework/wordpress-framework.zip" target="_blank"><img src="https://flikimax.com/wp-content/projects/wordpress-framework/download.svg" /></a> <a href="https://github.com/Flikimax/wordpress-framework/blob/main/license.txt" target="_blank"><img src="https://flikimax.com/wp-content/projects/wordpress-framework/license.svg" /></a>
 </p>
 
 ## Descripción

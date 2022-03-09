@@ -1,0 +1,5 @@
+### Composer ###
+/vendor/
+/vendor/composer/*
+composer.phar
+composer.lock

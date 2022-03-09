@@ -35,7 +35,7 @@ class RequestShortcode extends Request implements RequestInterface
      * 
      * @return string
      **/
-    public function prepare($attrs = array(), $content, $tag)
+    public function prepare($attrs = array(), string $content = '', $tag = '')
     {
         try {
             if ( !array_key_exists('controller', $attrs) || empty($attrs['controller']) ) {
@@ -135,11 +135,14 @@ class RequestShortcode extends Request implements RequestInterface
         $shortcodeName = basename( Paths::parsePath($this->namespace) );
         $controllerName = basename( Paths::parsePath($this->getController()) );
         
-        $ControllerPath = Paths::buildPath($this->pluginPath, 'Controllers', 'Shortcodes', $shortcodeName, "{$controllerName}.php");
-        $files = $this->files[$shortcodeName];
+        $controllerPath = Paths::parsePath(
+            Paths::buildPath($this->pluginPath, 'Controllers', 'Shortcodes', $shortcodeName, "{$controllerName}.php")
+        ); 
 
+        $files = $this->files[$shortcodeName];
+        
         # Se verifica que el Shortcode pueda acceder al archivo de clase del controlador.
-        if ( in_array($ControllerPath, $files) ) {
+        if ( in_array($controllerPath, $files) ) {
             return true;
         }
 

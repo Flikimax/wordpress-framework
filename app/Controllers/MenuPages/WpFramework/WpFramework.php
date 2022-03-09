@@ -23,7 +23,7 @@ class WpFramework
         # Si llegan datos del formulario.
         if ( $_POST['data'] ?? false ) {
             $this->createPlugin($_POST['data']);
-        } 
+        }
 
         return view('layout', [
             'content' => view('menuPages/frameworkWp/frameworkWp/index', [

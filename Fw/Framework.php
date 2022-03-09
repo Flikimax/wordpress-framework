@@ -13,6 +13,7 @@ namespace Fw;
 
 use Fw\Paths;
 use Fw\Init\Init;
+use Fw\Config\Apps;
 
 class Framework  
 { 
@@ -57,8 +58,10 @@ class Framework
     public function setArguments(array $args) : array
     {
         $mode = array_key_exists('mode', $args) ? $args['mode'] : 'dev';
-        return array_replace_recursive( array(
+        $pluginSlug = strToSlug( basename($this->paths->pluginFilePath, '.php') );
+        $config = array_replace_recursive( array(
             'mode' => $mode,
+            'pluginSlug' => strToSlug( basename($this->paths->pluginFilePath, '.php') ),
             'autoload' => array(
                 'uniqueName' => Structures\Autoload::createUniqueName(basename($this->paths->pluginFilePath)),
                 'psr-4' => [
@@ -94,6 +97,18 @@ class Framework
                 ]
             ),
         ), $args );
+
+        # Se movera la vieja configuración ($config) a la nueva (Singleton).
+        Apps::getInstance()::setApp(
+            $pluginSlug, 
+            array(
+                'config' => (object) $config,
+                'paths' => (object) $this->paths,
+            )
+        );
+
+        # Este return es temporal hasta que se implemente la nueva configuracion de la App (Singleton).
+        return $config;
     }
 
 }

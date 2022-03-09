@@ -20,5 +20,13 @@
             "email": "flikimax@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "illuminate/database": "~5.0.0",
+        "illuminate/events": "~5.0.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
+    }
 }

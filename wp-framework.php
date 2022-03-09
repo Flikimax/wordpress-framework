@@ -21,6 +21,25 @@ define('WPFW_VERSION', '20220124');
 if ( file_exists(__DIR__ . '/vendor/autoload.php') ) {
 	# Se carga el autoload del Framework.
 	require __DIR__ . '/vendor/autoload.php';
+
+	// $capsule = new \Illuminate\Database\Capsule\Manager;
+
+	// $capsule->addConnection([
+	// 	'driver'    => 'mysql',
+	// 	'host'      => 'localhost',
+	// 	'database'  => 'apps',
+	// 	'username'  => 'root',
+	// 	'password'  => '',
+	// 	'charset'   => 'utf8',
+	// 	'collation' => 'utf8_unicode_ci',
+	// 	'prefix'    => '',
+	// ]);
+
+	// $capsule->setEventDispatcher(
+	// 	new Illuminate\Events\Dispatcher(new \Illuminate\Container\Container)
+	// );
+	// $capsule->setAsGlobal();
+	// $capsule->bootEloquent();
 	
 	new Fw\Framework(__FILE__, [
 		'mode' => 'production',

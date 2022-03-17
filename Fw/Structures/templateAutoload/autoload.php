@@ -1,5 +1,10 @@
 <?php
+$path = __DIR__ . '/composer/autoload_real.php';
+if ( file_exists($path) ) {
+    require_once $path;
+}
 
-require_once __DIR__ . '/composer/autoload_real.php';
+if ( class_exists('ComposerAutoloaderInit') ) {
+    return ComposerAutoloaderInit::getLoader();
+}
 
-return # ComposerAutoloaderInit::getLoader();

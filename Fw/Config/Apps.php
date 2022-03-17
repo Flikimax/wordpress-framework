@@ -1,6 +1,8 @@
 <?php
 /**
+ * Extensión Singleton.
  * Configuraciones de la aplicación.
+ * Rutas de la aplicación.
  * 
  */
 
@@ -52,11 +54,11 @@ class Apps extends Singleton
     /**
      * Recibe y setea las configuraciones de una App.
      *
-     * @param string $pluginSlug Slug del plugin.
+     * @param string $pluginSlug Slug de la App.
      * @param mixed $configs Configuraciones de la App.
-     * @return void
+     * @return mixed
      */
-    public static function setApp (string $pluginSlug, mixed $configs = []) : void
+    public static function setApp (string $pluginSlug, mixed $configs = []) : mixed
     {   
         self::$currentPluginSlug = $pluginSlug;
         self::$instance = (object) [];
@@ -71,16 +73,19 @@ class Apps extends Singleton
         self::$instances[static::class]->{$pluginSlug} = self::$instance;
         self::$currentPluginSlug = null;
         self::$instance = null;
+
+        return self::$instances[static::class]->{$pluginSlug};
     }
 
     /**
      * Setea una configuración en una App especifica.
      *
-     * @param string $pluginSlug Slug del plugin.
-     * @param string $property Propiedad que se quiere obtener.
-     * @return mixed Valor.
+     * @param string $name Nombre de la configuración a setear.
+     * @param mixed $config Valor de la configuración.
+     * @param string $pluginSlug Slug de la App.
+     * @return mixed
      */
-    public static function setConfig (string $name, mixed $config, string $pluginSlug = '')
+    public static function setConfig (string $name, mixed $config, string $pluginSlug = '') : mixed
     {
         # Se valida que no exista la propiedad.
         if ( property_exists( self::$instance, $name ) ) {
@@ -89,9 +94,9 @@ class Apps extends Singleton
 
         # Se valida si se usara la instancia actual o el slug especificado.
         if ( self::$instance && empty($pluginSlug) ) {
-            self::$instance->{$name} = $config;
+            return self::$instance->{$name} = $config;
         } else {
-            self::$instances[static::class]->{$pluginSlug}->$configName = $config;
+            return self::$instances[static::class]->{$pluginSlug}->$configName = $config;
         }
     }
 

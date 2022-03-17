@@ -37,18 +37,41 @@ class BasePlugin
             return false;
         }
         
-        # Se renombra el archivo principal del plugin
-        rename(
-            Paths::buildPath($data['pluginPath'], 'plugin-ejemplo.php'),
-            Paths::buildPath($data['pluginPath'], $data['slug'] . '.php')
-        );
+        # Se renombran archivos.
+        self::renameFiles($data);
         
-        # Se Reemplazan los tags en los archivos requeridos
+        # Se Reemplazan los tags en los archivos requeridos,
         if ( !self::replaceTags($data) ) {
             return false;
         }
 
         return true;
+    }
+
+    public static function renameFiles($data)
+    {
+        # Se renombra el archivo principal del plugin.
+        rename(
+            Paths::buildPath($data['pluginPath'], 'plugin-ejemplo.php'),
+            Paths::buildPath($data['pluginPath'], $data['slug'] . '.php')
+        );
+
+        # Se renombran archivos assets.
+        $assetsPath = Paths::buildPath($data['pluginPath'], 'app', 'assets');
+        $assets = [
+            # Public
+            'style.css' => Paths::buildPath( $assetsPath, 'css', 'style.css' ),
+            'script.js' => Paths::buildPath( $assetsPath, 'js', 'script.js' ),
+            # Admin
+            'adminStyle.css' => Paths::buildPath( $assetsPath, 'admin', 'css', 'adminStyle.css' ),
+            'adminScript.js' => Paths::buildPath( $assetsPath, 'admin', 'js', 'adminScript.js' ),
+        ];
+
+        foreach ($assets as $asset => $path) {
+            $newPath = str_replace($asset, "{$data['slug']}-{$asset}.css", $path);
+            rename( $path, $newPath );
+        }
+
     }
 
     /**

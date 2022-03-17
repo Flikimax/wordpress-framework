@@ -21,8 +21,8 @@
         }
     ],
     "require": {
-        "illuminate/database": "~5.0.0",
-        "illuminate/events": "~5.0.0"
+        "illuminate/database": "^9.2.0",
+        "illuminate/events": "^9.2.0"
     },
     "config": {
         "allow-plugins": {

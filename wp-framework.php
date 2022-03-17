@@ -4,7 +4,7 @@
 Plugin Name:    		WP Framework
 Plugin URI: 			https://github.com/Flikimax/wordpress-framework
 Description:    		Framework mvc (modelo-vista-controlador) que ayuda a disminuir el tiempo de desarrollo de sistemas.
-Version:        		0.3.6
+Version:        		0.3.7
 Author: 				Flikimax
 Author URI: 			https://flikimax.com
 License: GPLv2 or later
@@ -16,31 +16,13 @@ if (!defined('ABSPATH')) {
 
 define('WPFW_NAME', 'WP Framework');
 define('WPFW_PATH', __DIR__);
-define('WPFW_VERSION', '20220124');
+define('WPFW_VERSION', '20220316');
 
 if ( file_exists(__DIR__ . '/vendor/autoload.php') ) {
 	# Se carga el autoload del Framework.
 	require __DIR__ . '/vendor/autoload.php';
 
-	// $capsule = new \Illuminate\Database\Capsule\Manager;
-
-	// $capsule->addConnection([
-	// 	'driver'    => 'mysql',
-	// 	'host'      => 'localhost',
-	// 	'database'  => 'apps',
-	// 	'username'  => 'root',
-	// 	'password'  => '',
-	// 	'charset'   => 'utf8',
-	// 	'collation' => 'utf8_unicode_ci',
-	// 	'prefix'    => '',
-	// ]);
-
-	// $capsule->setEventDispatcher(
-	// 	new Illuminate\Events\Dispatcher(new \Illuminate\Container\Container)
-	// );
-	// $capsule->setAsGlobal();
-	// $capsule->bootEloquent();
-	
+	# Se carga el Framework.
 	new Fw\Framework(__FILE__, [
 		'mode' => 'production',
 		'autoload' => false

@@ -15,25 +15,42 @@ use Fw\Init\MenuPage\MenuPagesManager;
 use Fw\Init\Shortcode\ShortcodesManager;
 use Fw\Init\LoadAssets;
 use Fw\Init\Routing\RoutingManager;
+use Fw\Config\Apps;
 use Fw\Paths;
 
 class Init  
 {
-    /** @var Paths $paths Objecto de rutas de la aplicación */
+    /** @var Paths $paths Objecto de rutas de la App. */
     public object $paths;
+    /** @var string $namespace Namespace de la App. */
+    public string $namespace;
+    
+    /** @var string $pluginSlug Slug de la App. */
+    public function __construct( public string $pluginSlug ) {
+        $this->paths = Apps::getConfig( $this->pluginSlug, 'paths' );
 
-    public function __construct(Paths $paths, array $args) {
-        $this->paths = $paths;
-        $this->args = $args;
-        
+        # Namespace
+        $namespace = Apps::getConfig( $this->pluginSlug, 'config' )?->namespace;
+        if ( !$namespace ) {
+            $namespace = Paths::createNamepace( $this->pluginSlug );
+        }
+        $this->namespace = $namespace;
+
         # Cargar assets.
         $this->loadAssets();
 
         # Routing.
+        // TODO: Implementar nueva configuración.
+        $routing = Apps::getConfig( $this->pluginSlug, 'config' )?->routing;
+        if ( !$routing ) {
+            $routing = [
+                'force' => false,
+            ];
+        }
         RoutingManager::initialize(
-            Paths::createNamepace($this->paths->pluginPath),
+            $this->namespace,
             $this->paths->controllers->routers,
-            $this->args['routing']
+            $routing
         );
 
         add_action('init', [$this, 'init']);
@@ -51,17 +68,14 @@ class Init
         # Menu Pages
         add_action('admin_menu', [
             new MenuPagesManager(
-                Paths::createNamepace($this->paths->pluginPath),
+                $this->namespace,
                 $this->paths->controllers->menuPages
             ), 
             'prepare'
         ]);
 
         # Shortcodes
-        ShortcodesManager::initialize(
-            Paths::createNamepace($this->paths->pluginPath),
-            $this->paths->controllers->shortcodes,
-        );
+        ShortcodesManager::initialize( $this->pluginSlug );
     }
 
     public function adminInit()
@@ -76,11 +90,18 @@ class Init
      **/
     public function loadAssets() : void
     {   
+        $loadAsset = Apps::getConfig( $this->pluginSlug, 'config' )
+        ?->loadAssets;
+
+        if ( !$loadAsset ) {
+            return;
+        }
+
         # Cargar assets admin
         if (is_admin()) {
-            new LoadAssets($this->args['loadAssets']['admin']);
+            new LoadAssets($loadAsset['admin']);
         } else {
-            new LoadAssets($this->args['loadAssets']['public']);
+            new LoadAssets($loadAsset['public']);
         }
     }
 

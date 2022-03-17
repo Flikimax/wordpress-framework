@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestiona las solicitud Menu Page para el usuario de administración.
+ * Gestiona las solicitud y la creación de Shortcode.
  * 
  */
 
@@ -9,20 +9,30 @@ namespace Fw\Init\Request;
 use Fw\Init\Request\Request;
 use Fw\Init\Request\RequestInterface;
 use Fw\Init\Response\Response;
+use Fw\Config\Apps;
 use Fw\Paths; 
 
 class RequestShortcode extends Request implements RequestInterface
 {
-    /** @var string $namespace Namespace del Shortcode. */
-    protected string $namespace;
-    /** @var array $files Ruta de los archivos de controlador. */
-    protected array $files;
+    /** @var object $instance Instancia de la App actual. */
+    private object $instance;
 
-    public function __construct(string $pluginPath, string $namespace, array $files) 
+    /** @var string $shortcode Recreación del Shortcode a ejecutar. */
+    private string $shortcode;
+
+    /** @var string $category Categoría a la que pertenece el controlador a ejecutar. */
+    private string $category;
+
+    /** @var string $shortcodeTag Shortcode tag. */
+    private string $shortcodeTag;
+
+    /** @var array $params Controlador a ejecutar. */
+    private array $params;
+
+    /** @var array $pluginSlug Slug de la App. */
+    public function __construct(string $pluginSlug) 
     {
-        $this->pluginPath = $pluginPath;
-        $this->namespace = $namespace;
-        $this->files = $files;
+        $this->instance = Apps::getApp( $pluginSlug );
     }
 
     /**
@@ -30,23 +40,56 @@ class RequestShortcode extends Request implements RequestInterface
      * Ejecuta el Request.
      * 
      * @param array $attrs Array de atributos del Shortcode.
-     * @param string|null $content Contenido del Shortcode o nulo si no se establece.
+     * @param string $content Contenido del Shortcode o nulo si no se establece.
+     * @param string $shortcodeTag Shortcode tag.
      * Puedes obtener mas información: https://developer.wordpress.org/reference/functions/add_shortcode/#parameters
      * 
      * @return string
      **/
-    public function prepare($attrs = array(), string $content = '', $tag = '')
+    public function prepare(array $attrs = array(), string $content = '', string $shortcodeTag = '')
     {
         try {
-            if ( !array_key_exists('controller', $attrs) || empty($attrs['controller']) ) {
-                throw new \Exception('Se requiere el atributo: controller.');
+            # Se recrea el Shortcode con los atributos a ejecutar.
+            $this->shortcode = "[{$shortcodeTag} ";
+            foreach ($attrs as $key => $value) {
+                $this->shortcode.= "{$key}='{$value}' ";
+            }
+            $this->shortcode .= ']';
+
+            $this->category = sanitize_text_field( key($attrs) );
+            $action = sanitize_text_field( array_shift($attrs) );
+
+            if ( empty( $action ) ) {
+                throw new \Fw\Init\Exceptions\General(
+                    "<br>En el Shortcode: {$this->shortcode}<br>" . 'Se requiere el controller. <a target="_blank" href="https://flikimax.notion.site/95f7fde081684487b248f29a9d464c7c?v=58d41bc9f8864ff895c6e8d2e27ab245">Documentation</a> <br>', 
+                    404
+                );
             }
 
-            # Se obtienen los datos.
-            $this->tag = $tag;
-            $this->controller = Paths::buildNamespacePath($this->namespace, $attrs['controller']);
-            $this->method = ( !empty($attrs['method']) ) ? $attrs['method'] : 'index';
-            unset( $attrs['controller'], $attrs['method'] );
+            $action = explode('@', $action);
+            
+            # Se obtienen los archivos de la categoria del Shortcode.
+            $path = Paths::buildPath(
+                $this->instance->paths->controllers->shortcodes, 
+                $this->category,
+                '*.php'
+            );
+            $this->files = glob( $path );
+
+            $this->shortcodeTag = $shortcodeTag;
+            $this->controller = Paths::buildNamespacePath( 
+                $this->instance->config->namespace,
+                'Controllers',
+                'Shortcodes',
+                $this->category,
+                $action[0]
+            );
+
+            if ( !class_exists($this->controller) ) {
+                throw new \Fw\Init\Exceptions\General("En el Shortcode: {$this->shortcode}<br>El Controller: {$this->controller} no fue encontrado.", 404);
+            }
+
+            $this->method = ( isset( $action[1] ) && !empty( $action[1] ) ) ? $action[1] : 'index';
             $this->params = $attrs;
 
             ob_start();
@@ -63,7 +106,7 @@ class RequestShortcode extends Request implements RequestInterface
      * Valida y ejecuta la solicitud para los Shortcodes.
      * 
      * @return string|null;
-     * @throws General
+     * @throws \Fw\Init\Exceptions\General
      */
     public function send() : ?string
     {
@@ -71,7 +114,7 @@ class RequestShortcode extends Request implements RequestInterface
         try {
             # Se valida que el Shortcode tenga permiso para ejecutar el archivo de clase.
             if ( !$this->isAllowedFile() ) {
-                throw new \Fw\Init\Exceptions\General("El Shortcode <strong>{$this->tag}</strong> no puede acceder al controlador: <strong>{$this->getController()}</strong>.", 404);
+                throw new \Fw\Init\Exceptions\General("El Shortcode <strong>{$this->shortcode}</strong> no puede acceder al controlador: <strong>{$this->getController()}</strong>.", 404);
             }
 
             # Validaciones método.
@@ -85,9 +128,9 @@ class RequestShortcode extends Request implements RequestInterface
             );
 
             if ($response instanceof Response) {
-                $response->send($this->pluginPath);
+                $response->send( $this->instance->paths->app );
             }
-        } catch (\Fw\Init\Exceptions\General $e) {
+        } catch ( \Fw\Init\Exceptions\General $e ) {
             echo $e->getError();
         }
         
@@ -132,17 +175,17 @@ class RequestShortcode extends Request implements RequestInterface
      **/
     public function isAllowedFile() : bool
     {
-        $shortcodeName = basename( Paths::parsePath($this->namespace) );
         $controllerName = basename( Paths::parsePath($this->getController()) );
         
         $controllerPath = Paths::parsePath(
-            Paths::buildPath($this->pluginPath, 'Controllers', 'Shortcodes', $shortcodeName, "{$controllerName}.php")
+            Paths::buildPath(
+                $this->instance->paths->controllers->shortcodes,
+                $this->category,
+                "{$controllerName}.php"
+            )
         ); 
 
-        $files = $this->files[$shortcodeName];
-        
-        # Se verifica que el Shortcode pueda acceder al archivo de clase del controlador.
-        if ( in_array($controllerPath, $files) ) {
+        if ( in_array($controllerPath, $this->files) ) {
             return true;
         }
 

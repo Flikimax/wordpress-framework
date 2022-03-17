@@ -19,55 +19,58 @@ class Framework
 { 
     /** @var Paths $paths Objecto de rutas de la aplicación. */
     public object $paths;
-    /** @var array $args Argumentos (setting) de la aplicación. */
-    protected array $args;
 
-    public function __construct (string $pluginFilePath, array $args = array())
-    { 
-        # Rutas de la aplicacion.
-        $this->paths = new Paths($pluginFilePath);
-        # Se establecen argumentos que seran utilizados para extension del Framework.
-        $this->args = $this->setArguments($args);
+    /**
+     * @param string $pluginFilePath Ruta del archivo principal del plugin.
+     * @param array $args Argumentos (setting) de la aplicación.
+     **/
+    public function __construct (
+        public string $pluginFilePath,
+        public array $args = array()
+    )
+    {
+        # Se establecen argumentos de la aplicación.
+        $instance = $this->setArguments();
 
         # Creación de estructuras.
         Structures\BuildStructures::init(['autoload'], [
-            'mode' => $this->args['mode'],
-            'autoload' => $this->args['autoload'],
-            'pluginPath' => $this->paths->pluginPath,
+            'mode' => $instance->config->mode,
+            'autoload' => $instance->config->autoload,
+            'pluginPath' => $instance->paths->pluginPath,
         ]);
         
         # Se carga el autoload del plugin
-        if ( file_exists($appAutoload = Paths::buildPath($this->paths->pluginPath, 'autoload', 'autoload.php')) ) {
+        if ( file_exists($appAutoload = Paths::buildPath($instance->paths->pluginPath, 'autoload', 'autoload.php')) ) {
             include_once $appAutoload;
         }
 
         # Procesos iniciales
-        new Init($this->paths, [
-            'loadAssets' => $this->args['loadAssets'],
-            'routing' => $this->args['routing'],
-        ]);
+        new Init( $instance->config->pluginSlug );
     }
 
     /**
      * Se establecen los argumentos de la App.
      * Esto permitira implementar a futuro configuraciones de la App.
      *
-     * @param array $args
-     * @return array
+     * @return object
      **/
-    public function setArguments(array $args) : array
+    public function setArguments() : object
     {
-        $mode = array_key_exists('mode', $args) ? $args['mode'] : 'dev';
-        $pluginSlug = strToSlug( basename($this->paths->pluginFilePath, '.php') );
+        # Rutas de la aplicacion.
+        $paths = new Paths( $this->pluginFilePath );
+
+        $mode = array_key_exists('mode', $this->args) ? $this->args['mode'] : 'dev';
+        $pluginSlug = strToSlug( basename($paths->pluginFilePath, '.php') );
         $config = array_replace_recursive( array(
             'mode' => $mode,
-            'pluginSlug' => strToSlug( basename($this->paths->pluginFilePath, '.php') ),
+            'pluginSlug' => strToSlug( basename($paths->pluginFilePath, '.php') ),
+            'namespace' => Paths::createNamepace($paths->pluginPath),
             'autoload' => array(
-                'uniqueName' => Structures\Autoload::createUniqueName(basename($this->paths->pluginFilePath)),
+                'uniqueName' => Structures\Autoload::createUniqueName(basename($paths->pluginFilePath)),
                 'psr-4' => [
-                    Paths::createNamepace($this->paths->pluginFilePath) . "\\" => 'app/',
+                    Paths::createNamepace($paths->pluginFilePath) . "\\" => 'app/',
                 ],
-                'files' => Paths::listFiles($this->paths->pluginPath, Paths::buildPath($this->paths->helpers), '*.php'),
+                'files' => Paths::listFiles($paths->pluginPath, Paths::buildPath($paths->helpers), '*.php'),
             ),
             'routing' => array(
                 'force' => false,
@@ -77,7 +80,7 @@ class Framework
                     'is_admin' => true,
                     'load' => 'all',
                     'mode' => $mode,
-                    'path' => $this->paths->adminAssets,
+                    'path' => $paths->adminAssets,
                     'argsJs' => [
                         'ajaxurl' => admin_url('admin-ajax.php')
                     ],
@@ -86,7 +89,7 @@ class Framework
                 'public' => [
                     'load' => 'all',
                     'mode' => $mode,
-                    'path' => $this->paths->assets,
+                    'path' => $paths->assets,
                     'argsJs' => [
                         'ajaxurl' => admin_url('admin-ajax.php')
                     ],
@@ -96,19 +99,15 @@ class Framework
                     'in_footer' => false
                 ]
             ),
-        ), $args );
+        ), $this->args );
 
-        # Se movera la vieja configuración ($config) a la nueva (Singleton).
-        Apps::getInstance()::setApp(
+        return $instance = Apps::getInstance()::setApp(
             $pluginSlug, 
             array(
                 'config' => (object) $config,
-                'paths' => (object) $this->paths,
+                'paths' => (object) $paths,
             )
         );
-
-        # Este return es temporal hasta que se implemente la nueva configuracion de la App (Singleton).
-        return $config;
     }
 
 }

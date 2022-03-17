@@ -5,12 +5,14 @@
 * License: GPLv2 or later
 */
 
-if (!defined('ABSPATH')) {
+if ( !defined('ABSPATH') ) {
 	exit;
-} 
+}
 
-if (in_array('wp-fw/wp-framework.php', get_option('active_plugins'))) { 
-    require_once (WP_PLUGIN_DIR . '/wp-fw/wp-framework.php');
+# Se valida que el plugin este activado y que el archivo principal del Wp Framework exista.
+$fwPath = 'wordpress-framework/wp-framework.php';
+if ( in_array($fwPath, get_option('active_plugins')) && file_exists(WP_PLUGIN_DIR . "/{$fwPath}") ) { 
+    require_once (WP_PLUGIN_DIR . "/{$fwPath}");
 
     if ( file_exists(__DIR__ . '/autoload/autoload.php') ) {
         try {
@@ -22,10 +24,6 @@ if (in_array('wp-fw/wp-framework.php', get_option('active_plugins'))) {
             }
         }
     }
-	
+    
     new Fw\Framework(__FILE__);
 }
-
-
-
-

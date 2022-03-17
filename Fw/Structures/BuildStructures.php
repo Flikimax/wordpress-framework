@@ -10,8 +10,15 @@ use Fw\Paths;
 
 class BuildStructures
 {
+    /** @var WP_Filesystem_Direct $fileSystemDirect Clase de sistema de archivos de WordPress para la manipulación directa de archivos y carpetas PHP. */
+    public static $fileSystemDirect;
+
     public static function init(array $structures, array $args)
     {
+        require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
+        require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+        self::$fileSystemDirect = new \WP_Filesystem_Direct(false);
+
         foreach ($structures as $structure) {
             if ( method_exists(static::class, $structure) ) {
                 self::{$structure}($args);
@@ -63,8 +70,12 @@ class BuildStructures
      **/
     public static function createFolder(string $path, int $permissions) : void
     {
+        if ( file_exists($path) ) {
+            return;
+        }
+
         $old_umask = umask(0);
-        mkdir($path, $permissions);
+        @mkdir($path, $permissions);
         umask($old_umask);
     }
 
@@ -102,11 +113,17 @@ class BuildStructures
      **/
     public static function copyFile(string $source, string $dest) : bool
     {
-        if ( !copy($source, $dest) ) {
-            echo "Error al copiar: $source";
-            return false;
+        $result = @self::$fileSystemDirect->copy( 
+            $source, 
+            $dest, 
+            true
+        );
+
+        if ( file_exists($dest) ){
+            chmod($dest, 0755);
         }
-        return true;
+
+        return (bool) $result;
     }
 
     /**
@@ -141,12 +158,10 @@ class BuildStructures
 
 
     /**
-     * undocumented function summary
+     * Copia una estructura de folders y files en una ruta especifica.
      *
-     * Undocumented function long description
-     *
-     * @param Type $structurePath Ruta de la estructura a copiar.
-     * @param Type $newPath Ruta destino para la estructura.
+     * @param string $structurePath Ruta de la estructura a copiar.
+     * @param string $newPath Ruta destino para la estructura.
      * @return bool
      **/
     public static function copyStructure(string $structurePath, string $newPath) : bool
@@ -166,35 +181,14 @@ class BuildStructures
     }
 
     /**
-     * Borra recursivamente folders y files de una ruta recibida.
+     * Borra folders y files de una ruta recibida.
      *
      * @param string $path Ruta del folder.
-     * @return bool|string
+     * @param bool $recursive Si eliminar folders/files recursivamente.
+     * @return bool
      **/
-    public static function remove(string $path) 
+    public static function remove(string $path, bool $recursive = true) : bool 
     {
-        if ( !file_exists($path) ) {
-            return true;
-        }
-
-        try {
-            # Se obtienen y se recorren los folders/files a eliminar.
-            $it = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
-            $it = new \RecursiveIteratorIterator($it, \RecursiveIteratorIterator::CHILD_FIRST);
-
-            foreach($it as $file) {
-                if ($file->isDir()) {
-                    rmdir($file->getPathname());
-                } else {
-                    unlink($file->getPathname());
-                }
-            }
-            rmdir($path);
-        } catch (\Exception $e) { 
-            echo "Error al eliminar ($path) ",  $e->getMessage(), "\n";
-            return false;
-        }
-        
-        return true;
+        return self::$fileSystemDirect->rmdir($path, $recursive);
     }
 }

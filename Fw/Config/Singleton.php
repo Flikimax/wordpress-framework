@@ -1,6 +1,6 @@
 <?php
 /**
- * Singleton para el Framework.
+ * Singleton.
  * 
  */
 

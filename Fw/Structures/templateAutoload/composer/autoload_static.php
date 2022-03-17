@@ -1,7 +1,7 @@
 <?php
 namespace Composer\Autoload;
 
-class # ComposerStaticInit
+class ComposerStaticInit
 {
 
     # %FILES%
@@ -17,9 +17,9 @@ class # ComposerStaticInit
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = # ComposerStaticInit::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = # ComposerStaticInit::$prefixDirsPsr4;
-            $loader->classMap = # ComposerStaticInit::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -23,7 +23,7 @@ class Autoload
         if ( array_key_exists('mode', $args) && method_exists(static::class, "{$args['mode']}Mode") ) { 
             self::{$args['mode'] . "Mode"}($args);
         }
-
+        
         # Validación de la estructura del autoload.
         if ( !self::validateStructure($args['composerPath']) ) {
             if ($args = self::validateData($args)) {
@@ -131,13 +131,15 @@ class Autoload
         foreach (glob(Paths::buildPath($templateAutoloadPath, 'composer', '*.php')) as $file) {
             # Si no existe el file, se copia del template y se reemplazan metas.
             if ( !file_exists($copy = Paths::buildPath($composerCopyPath, basename($file))) ) {
+                
                 BuildStructures::copyFile($file, $copy);
-                $data = file_get_contents($copy);
+                $data = BuildStructures::$fileSystemDirect->get_contents($copy);
 
                 $method = 'create' . ucfirst( basename($copy, '.php') );
                 self::{$method}($args, $data);
 
                 $content = self::{'create' . ucfirst( basename($copy, '.php') )}($args, $data);
+
                 if ($content) {
                     file_put_contents($copy, $content);
                 }
@@ -148,7 +150,7 @@ class Autoload
         foreach (glob(Paths::buildPath($templateAutoloadPath, '*.php')) as $file) {
             if ( !file_exists($copy = Paths::buildPath(dirname($composerCopyPath), basename($file))) ) {
                 BuildStructures::copyFile($file, $copy);
-                $data = file_get_contents($copy);
+                $data = BuildStructures::$fileSystemDirect->get_contents($copy);
 
                 $method = 'create' . ucfirst( basename($copy, '.php') );
                 $content = self::{$method}($args, $data);
@@ -247,7 +249,7 @@ class Autoload
         }
 
         # Clase.
-        $newData = str_replace('# ComposerStaticInit', "ComposerStaticInit{$args['uniqueName']}", $data);
+        $newData = str_replace('ComposerStaticInit', "ComposerStaticInit{$args['uniqueName']}", $data);
 
         # Autocargar files.
         ob_start();
@@ -259,7 +261,7 @@ class Autoload
             echo "    );";
             $newData = str_replace('# %FILES%', ob_get_clean(), $newData);
         } 
- 
+
         # Length PSR4.
         ob_start();
         echo "public static \$prefixLengthsPsr4 = array (\n";
@@ -305,9 +307,9 @@ class Autoload
         }
 
         # Clase principal.
-        $newData = str_replace('# ComposerAutoloaderInit', "ComposerAutoloaderInit{$args['uniqueName']}", $data);
+        $newData = str_replace('ComposerAutoloaderInit', "ComposerAutoloaderInit{$args['uniqueName']}", $data);
         # Static Class.
-        $newData = str_replace('# ComposerStaticInit', "ComposerStaticInit{$args['uniqueName']}", $newData);
+        $newData = str_replace('ComposerStaticInit', "ComposerStaticInit{$args['uniqueName']}", $newData);
 
         # Autocargar files.
         if ( isset($args['autoload']['files']) && is_array($args['autoload']['files']) ) {
@@ -348,6 +350,10 @@ class Autoload
      **/
     private static function createAutoload(array $args, string $data) : ?string
     {
-        return str_replace('# ComposerAutoloaderInit', "ComposerAutoloaderInit{$args['uniqueName']}", $data);
+        return str_replace(
+            'ComposerAutoloaderInit', 
+            "ComposerAutoloaderInit{$args['uniqueName']}", 
+            $data
+        );
     }
 }

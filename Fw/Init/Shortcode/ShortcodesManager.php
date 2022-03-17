@@ -5,7 +5,9 @@
  */
 namespace Fw\Init\Shortcode;
 
+use Fw\Init\Request\RequestShortcode;
 use Fw\Init\Shortcode\Shortcodes;
+use Fw\Config\Apps;
 use Fw\Paths;
 
 class ShortcodesManager
@@ -13,13 +15,16 @@ class ShortcodesManager
     /**
      * Valida y prepara los argumentos para la creación de los Shortcodes.
      *
-     * @param string $namespace Namespace base de la aplicación.
-     * @param string $shortcodesPath Ruta en la app de los Shortcodes.
      * @return void
      **/
-    public static function initialize(string $namespace, string $shortcodesPath) : void
+    public static function initialize(string $pluginSlug) : void
     {
-        if ( !file_exists($shortcodesPath) ) {
+        # Ruta de los Shortcodes.
+        $shortcodesPath = Apps::getConfig( $pluginSlug, 'paths' )
+            ?->controllers
+            ?->shortcodes;
+
+        if ( !$shortcodesPath || !file_exists($shortcodesPath) ) {
             return;
         }
 
@@ -27,22 +32,41 @@ class ShortcodesManager
         if ( !$dirs = array_diff(scandir($shortcodesPath), array('.', '..')) ) {
             return;
         }
-
-        $shortcodes = [];
+        
+        # Validación para determinar si se crea Shortcodes de la App.	
+        $shortcode = false;
         foreach ($dirs as $directory) {
-            $mainPath = Paths::buildPath($shortcodesPath, $directory);
+            $mainPath  = Paths::buildPath($shortcodesPath, $directory);
             if ( !$files = glob(Paths::buildPath($mainPath, '*.php')) ) {
                 continue;
             }
 
-            $shortcodes[$directory] = $files;
+            $shortcode = true;
+            break;
         }
-        
-        # Si Shortcodes disponibles. 
-        if ( count($shortcodes) > 0 ) {
-            $shortcodes['path'] = Paths::findPluginPath($shortcodesPath);
-            Shortcodes::createShortcodes($namespace, $shortcodes);
+
+        if ( $shortcode ) {
+            self::create( $pluginSlug );
         }
+    }
+
+    /**
+     * Creación de los Shortcodes.
+     * Ejemplo: [plugin_ejemplo Post=Controller@method param1='value1' param2='value2']
+     *
+     * @param string $pluginSlug Slug de la App.
+     * @return void
+     **/
+    public static function create( $pluginSlug ) : void
+    {
+        $shortcodesPath = Apps::getConfig( $pluginSlug, 'config' )
+            ->pluginSlug;
+
+        # Creación de los Shortcodes.
+        $tag = strToSlug( $pluginSlug, '_' );
+        $tag = str_replace('-', '_', $tag);
+
+        add_shortcode( $tag, [new RequestShortcode($pluginSlug), 'prepare'] );
     }
 
 }

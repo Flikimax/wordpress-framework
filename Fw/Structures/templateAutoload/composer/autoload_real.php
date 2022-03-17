@@ -1,6 +1,6 @@
 <?php
 
-class # ComposerAutoloaderInit
+class ComposerAutoloaderInit
 {
     private static $loader;
 
@@ -20,29 +20,34 @@ class # ComposerAutoloaderInit
             return self::$loader;
         }
 
-        spl_autoload_register(array('# ComposerAutoloaderInit', 'loadClassLoader'), true, true);
+        spl_autoload_register(array('ComposerAutoloaderInit', 'loadClassLoader'), true, true);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(\dirname(__FILE__)));
-        spl_autoload_unregister(array('# ComposerAutoloaderInit', 'loadClassLoader'));
+        spl_autoload_unregister(array('ComposerAutoloaderInit', 'loadClassLoader'));
 
         $useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
-        if ($useStaticLoader) {
+        if ($useStaticLoader && file_exists(__DIR__ . '/autoload_static.php')) {
             require __DIR__ . '/autoload_static.php';
-
-            call_user_func(\Composer\Autoload\# ComposerStaticInit::getInitializer($loader));
+            call_user_func(\Composer\Autoload\ComposerStaticInit::getInitializer($loader));
         } else {
-            $map = require __DIR__ . '/autoload_namespaces.php';
-            foreach ($map as $namespace => $path) {
-                $loader->set($namespace, $path);
+            if ( file_exists(__DIR__ . '/autoload_namespaces.php') ) {
+                $map = require __DIR__ . '/autoload_namespaces.php';
+                foreach ($map as $namespace => $path) {
+                    $loader->set($namespace, $path);
+                }
             }
 
-            $map = require __DIR__ . '/autoload_psr4.php';
-            foreach ($map as $namespace => $path) {
-                $loader->setPsr4($namespace, $path);
+            if ( file_exists(__DIR__ . '/autoload_psr4.php') ) {
+                $map = require __DIR__ . '/autoload_psr4.php';
+                foreach ($map as $namespace => $path) {
+                    $loader->setPsr4($namespace, $path);
+                }
             }
 
-            $classMap = require __DIR__ . '/autoload_classmap.php';
-            if ($classMap) {
-                $loader->addClassMap($classMap);
+            if ( file_exists(__DIR__ . '/autoload_classmap.php') ) {
+                $classMap = require __DIR__ . '/autoload_classmap.php';
+                if ($classMap) {
+                    $loader->addClassMap($classMap);
+                }
             }
         }
 

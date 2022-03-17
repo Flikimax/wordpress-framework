@@ -1,5 +1,4 @@
-### Composer ###
-/vendor/
-/vendor/composer/*
+/vendor
 composer.phar
 composer.lock
+/.vscode

@@ -6,13 +6,13 @@
     <form method="POST">
         <?=wp_nonce_field('create-plugin-nonce', 'fwNonce'); ?>
         <div class="input-container">
-            <label for="data[name]">Plugin Name</label>
+            <label for="data[name]">Plugin Name *</label>
             <input type="text" name="data[pluginName]" required>
         </div>
     
         <div class="input-container">
             <label for="data[description]">Description</label>
-            <input type="text" name="data[description]" required>
+            <input type="text" name="data[description]">
         </div>
     
         <div class="input-container">

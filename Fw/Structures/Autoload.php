@@ -169,7 +169,7 @@ class Autoload
      **/
     public static function createuniqueName(string $name) : string
     {
-        return (string) 'Fw' . Paths::createNamepace($name) . time();
+        return (string) 'Fw' . Paths::createNamespace($name) . time();
     }
     
 

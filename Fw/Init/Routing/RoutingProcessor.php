@@ -84,7 +84,7 @@ class RoutingProcessor
     /**
      * Comprueba si se ha encontrado a una ruta. 
      * Si hay una, carga el controller para la ruta.
-     * Ejecuta el método index(), el método error404() o la platilla 404 del tema respectivamente.
+     * Ejecuta el método enviado, el index(), el método error404() o la platilla 404 del tema respectivamente.
      *
      * @param string $template
      * @return string
@@ -102,16 +102,15 @@ class RoutingProcessor
                 $method = get_query_var('method');
             }
 
+            # Ejecución del RequestWeb
             $request = new RequestWeb(
                 $this->router->pluginPath,
                 $controller,
                 $method
             );
+            $request->send();
 
-            $newTemplate = $request->send();
-            if ( !is_null($newTemplate) ) {
-                return $newTemplate;
-            }
+            return \Fw\Paths::buildPath( __DIR__, 'template.php' );
         }
 
         return $template;

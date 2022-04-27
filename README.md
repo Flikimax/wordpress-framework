@@ -16,7 +16,7 @@ Este proyecto se hace <strong>Open Source</strong> y será encabezado por <stron
 
 #### Prerrequisitos
 
-- PHP 8
+- PHP ^8.0.2
 - Composer
 
 #### Instalación
@@ -32,3 +32,7 @@ cd wordpress-framework
 ```
 composer install
 ```
+
+#### Documentación
+
+[La documentación la puedes encontrar aquí.](https://docs.wordpress-framework.com/docs)

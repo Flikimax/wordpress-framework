@@ -1,1 +1,1 @@
-<h1>Pagina Ejemplo</h1>
+<h1><?php echo $title;?> </h1>

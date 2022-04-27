@@ -32,3 +32,23 @@ function strToSlug(string $string, string $separator = '-') : string
     return $string;
 }
 
+/**
+ * Retorna la url base de un controlador.
+ * Ejemplo: Controllers\Routes\AlohaMundoController => /aloha-mundo
+ * 
+ * @param string $routeController
+ * @return string
+ **/
+function routeUrl(string $routeController) : string
+{
+    # Se remueve la palabra controller, se recorta el nombre de la clase y se remueven los acentos.
+    $routeController = str_replace('Controller', '', $routeController);
+    $routeController = basename($routeController, '\\');
+    $routeController = remove_accents($routeController);
+    
+    $routeController = preg_replace( '/[A-Z]/', '-$0',  $routeController);
+    $routeController = strtolower( ltrim($routeController, '-') );
+    $routeController = str_replace( ' ', '-', $routeController );
+    
+    return '/' . trim($routeController, '/');
+}

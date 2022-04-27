@@ -30,7 +30,7 @@ class RoutingManager
 
         $router = new Router($routerName, $args['force']);
         $router->pluginPath = Paths::trimPath($path, 2);
-        $routes = self::prepareRoutes($routerName, $path);
+        $routes = self::prepareRoutes(Paths::createNamespace( $routerName ), $path);
         RoutingProcessor::init($router, $routes);
     }
 
@@ -54,7 +54,7 @@ class RoutingManager
 
             # Creación del objecto de ruta.
             $routes[$routeKey] = new Route(
-                self::routeUrl($controller, $route),
+                self::routeContreollerUrl($controller, $route),
                 $controller
             );
             # Propiedades adicionales
@@ -72,17 +72,15 @@ class RoutingManager
      * @param string $route
      * @return string
      **/
-    private static function routeUrl(string $controller, string $route) : string
+    private static function routeContreollerUrl(string $controller, string $route) : string
     {
         if ( property_exists($controller, 'routeUrl') ) {
             $route = $controller::$routeUrl;
-        } else {
-            $route = preg_replace( '/[A-Z]/', '-$0',  $route);
-            $route = strtolower( ltrim($route, '-') );
         }
 
-        return '/' . trim($route, '/');
+        return routeUrl($route);
     }
+
 }
 
 

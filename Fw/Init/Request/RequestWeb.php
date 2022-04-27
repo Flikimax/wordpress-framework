@@ -28,13 +28,10 @@ class RequestWeb extends Request implements RequestInterface
                 return $callback;
             }
 
-            get_header();
             $response = call_user_func($callback);
-
-            if ($response instanceof Response) {
+            if ( $response instanceof Response ) {
                 $response->send($this->pluginPath);
             }
-            get_footer();
         } catch (\Fw\Init\Exceptions\General $e) {
             echo $e->getError();
         }

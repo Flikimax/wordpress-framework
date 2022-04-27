@@ -64,11 +64,11 @@ class Framework
         $config = array_replace_recursive( array(
             'mode' => $mode,
             'pluginSlug' => strToSlug( basename($paths->pluginFilePath, '.php') ),
-            'namespace' => Paths::createNamepace($paths->pluginPath),
+            'namespace' => Paths::createNamespace($paths->pluginPath),
             'autoload' => array(
                 'uniqueName' => Structures\Autoload::createUniqueName(basename($paths->pluginFilePath)),
                 'psr-4' => [
-                    Paths::createNamepace($paths->pluginFilePath) . "\\" => 'app/',
+                    Paths::createNamespace($paths->pluginFilePath) . "\\" => 'app/',
                 ],
                 'files' => Paths::listFiles($paths->pluginPath, Paths::buildPath($paths->helpers), '*.php'),
             ),

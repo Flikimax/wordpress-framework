@@ -26,11 +26,11 @@ class MenuPages
 
         foreach ($menuPages as $name => $args) {
             $name = spaceUpper($name);
-            
+
             # Menu Page
             add_menu_page( 
-                $name,
-                $name,
+                $args['pageTitle'],
+                $args['menuTitle'],
                 $args['capability'], 
                 $args['menuSlug'], 
                 [new RequestMenuPage(

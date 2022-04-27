@@ -275,11 +275,11 @@ class LoadAssets
     /**
      * Modo producción, se WPFW_VERSION para mantener fija la versión de los scrips.
      *
-     * @return int
+     * @return string
      **/
-    public static function productionMode() : int
+    public static function productionMode() : string
     {
-        return (int) WPFW_VERSION;
+        return WPFW_VERSION;
     }
 
 }

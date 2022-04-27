@@ -6,6 +6,8 @@
 
 namespace Fw;
 
+use Fw\Config\Apps;
+
 class Paths  
 {
     /** @var string $pluginFilePath Ruta del archivo principal de la aplicación. */
@@ -44,8 +46,13 @@ class Paths
      * @param string $name Ruta|Nombre para retornar para usar como namespace.
      * @return string
      **/
-    public static function createNamepace(string $name) : string 
+    public static function createNamespace(string $name) : string 
     {
+        $namespace = Apps::getConfig( $name, 'config' )?->namespace;
+        if ( $namespace ) {
+            return $namespace;
+        }
+        
         $namespace = basename($name, '.php');
         $namespace = ucwords($namespace, '-');
         $namespace = str_replace(' ', '', $namespace);
@@ -170,10 +177,12 @@ class Paths
         $this->adminAssets = self::buildPath($this->assets, 'admin');
 
         $this->controllers = (object) [
-            'routers' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Routers'),
+            'routes' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Routes'),
             'menuPages' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'MenuPages'),
             'shortcodes' => self::buildPath($this->pluginPath, 'app', 'Controllers', 'Shortcodes'),
         ];
+
+        $this->views = self::buildPath($this->pluginPath, 'app', 'views');
 
         $this->helpers = self::buildPath($this->app, 'helpers');
     }

@@ -30,7 +30,7 @@ class BasePlugin
             return false; 
         } 
 
-        $data['namespace'] = Paths::createNamepace($data['pluginName']);
+        $data['namespace'] = Paths::createNamespace($data['pluginName']);
         
         # Se copia la estructura base del plugin
         if ( !\Fw\Structures\BuildStructures::copyStructure(Paths::buildPath(__DIR__, 'templateApp'), $data['pluginPath']) ) {
@@ -68,7 +68,7 @@ class BasePlugin
         ];
 
         foreach ($assets as $asset => $path) {
-            $newPath = str_replace($asset, "{$data['slug']}-{$asset}.css", $path);
+            $newPath = str_replace($asset, "{$data['slug']}-{$asset}", $path);
             rename( $path, $newPath );
         }
 

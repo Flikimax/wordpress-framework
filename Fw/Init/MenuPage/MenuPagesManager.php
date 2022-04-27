@@ -49,15 +49,17 @@ class MenuPagesManager
             }
 
             # Menu Page Principal
-            $menuPageKey = array_search(Paths::buildPath($mainPath, "{$directory}.php"), $files); 
-            if ( $menuPageKey ) {
+            if ( $menuPageKey = array_search(Paths::buildPath($mainPath, "{$directory}.php"), $files) ) {
+                $menuPage = $files[$menuPageKey];
+                unset($files[$menuPageKey]);
+            } else if ( $menuPageKey = array_search(Paths::buildPath($mainPath, "{$directory}Controller.php"), $files) ) {
                 $menuPage = $files[$menuPageKey];
                 unset($files[$menuPageKey]);
             } else {
                 $menuPage = $files[0];
                 unset($files[0]);
             }
-
+            
             # Menu Page
             $menuPages[$directory] = $this->prepareMenuPage(
                 Paths::buildNamespacePath(
@@ -104,6 +106,7 @@ class MenuPagesManager
     {
         $controllerName = str_replace('\\', '/', $class);
         $controllerName = basename($controllerName);
+        $controllerName = str_replace('Controller', '', $controllerName);
         
         # Page Title
         $menuPage['pageTitle'] = Request::propertyExists($class, 'pageTitle') ? $class::$pageTitle : spaceUpper($controllerName);

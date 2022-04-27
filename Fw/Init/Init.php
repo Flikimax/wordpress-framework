@@ -28,13 +28,7 @@ class Init
     /** @var string $pluginSlug Slug de la App. */
     public function __construct( public string $pluginSlug ) {
         $this->paths = Apps::getConfig( $this->pluginSlug, 'paths' );
-
-        # Namespace
-        $namespace = Apps::getConfig( $this->pluginSlug, 'config' )?->namespace;
-        if ( !$namespace ) {
-            $namespace = Paths::createNamepace( $this->pluginSlug );
-        }
-        $this->namespace = $namespace;
+        $this->namespace = Paths::createNamespace( $this->pluginSlug );
 
         # Cargar assets.
         $this->loadAssets();
@@ -43,16 +37,15 @@ class Init
         // TODO: Implementar nueva configuración.
         $routing = Apps::getConfig( $this->pluginSlug, 'config' )?->routing;
         if ( !$routing ) {
-            $routing = [
-                'force' => false,
-            ];
+            $routing = [ 'force' => false ];
         }
         RoutingManager::initialize(
-            $this->namespace,
-            $this->paths->controllers->routers,
+            basename( $this->paths->pluginPath ),
+            $this->paths->controllers->routes,
             $routing
         );
 
+        # Procesos Iniciales.
         add_action('init', [$this, 'init']);
     }
 
@@ -98,11 +91,31 @@ class Init
         }
 
         # Cargar assets admin
-        if (is_admin()) {
+        if ( is_admin() ) {
             new LoadAssets($loadAsset['admin']);
         } else {
             new LoadAssets($loadAsset['public']);
         }
+    }
+    
+    /**
+     * Verifica si el tema es de tipo Bloque.
+     *
+     * @return bool
+     **/
+    public static function isThemeTypeBlock() : bool
+    {
+        $themeTemplates = Paths::buildPath( get_template_directory(), 'templates' );
+
+        if ( !file_exists($themeTemplates) ) {
+            return false;
+        }
+
+        if ( glob(Paths::buildPath($themeTemplates, '/*.html')) ) {
+            return true;
+        }
+
+        return false;
     }
 
 }

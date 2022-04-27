@@ -44,7 +44,6 @@ class WpFramework
             wp_die("Error: Invalid nonce check.");
         }
         
-
         echo "<h1>Create Component: {$data['pluginName']}.</h1>";
         
         if ( !\Fw\Structures\BuildStructures::basePlugin($data) ) {
@@ -53,8 +52,6 @@ class WpFramework
         } else {
             echo "<h3>Plugin creado con exito.</h3>";
         }
-        
-        
     }
 
     /**

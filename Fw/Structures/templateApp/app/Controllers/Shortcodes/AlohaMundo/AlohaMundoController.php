@@ -4,7 +4,7 @@
  * 
  */
 
-# namespace
+# namespace;
 
 class AlohaMundoController
 {
@@ -13,12 +13,12 @@ class AlohaMundoController
      * 
      * Ejemplo 1: 
      * Nombre del plugin: aloha-mundo
-     * Shortcode: [aloha_mundo Alohamundo=AlohaMundo]
+     * Shortcode: [carpeta_plugin Alohamundo=AlohaMundo]
      *            [tag                C.C=Controller]
      * 
      * Ejemplo 2:
      * Nombre del plugin: alohaMundo
-     * Shortcode: [alohamundo Alohamundo=AlohaMundo]
+     * Shortcode: [carpetaplugin Alohamundo=AlohaMundo]
      *            [tag               C.C=Controller]
      * 
      * C.C = Carpeta Contenedora.
@@ -39,12 +39,12 @@ class AlohaMundoController
      * 
      * Ejemplo 1: 
      * Nombre del plugin: aloha-mundo
-     * Shortcode: [aloha_mundo Alohamundo=AlohaMundo@saludo]
+     * Shortcode: [carpeta_plugin Alohamundo=AlohaMundo@saludo]
      *            [tag                C.C=Controller@method]
      * 
      * Ejemplo 2:
      * Nombre del plugin: alohaMundo
-     * Shortcode: [alohamundo Alohamundo=AlohaMundo@saludo]
+     * Shortcode: [carpetaplugin Alohamundo=AlohaMundo@saludo]
      *            [tag               C.C=Controller@method]
      * 
      * C.C = Carpeta Contenedora.

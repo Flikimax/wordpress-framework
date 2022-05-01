@@ -88,7 +88,7 @@ class RequestShortcode extends Request implements RequestInterface
             if ( class_exists($this->controller . 'Controller') ) {
                 $this->controller = $this->controller . 'Controller';
             } else if ( !class_exists($this->controller) ) {
-                throw new \Fw\Init\Exceptions\General("F-En el Shortcode: {$this->shortcode}<br>El Controller: {$this->controller} no fue encontrado.", 404);
+                throw new \Fw\Init\Exceptions\General("En el Shortcode: {$this->shortcode}<br>El Controller: {$this->controller} no fue encontrado.", 404);
             }
 
             $this->method = ( isset( $action[1] ) && !empty( $action[1] ) ) ? $action[1] : 'index';

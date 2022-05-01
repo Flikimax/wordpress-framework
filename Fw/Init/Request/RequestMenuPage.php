@@ -27,7 +27,12 @@ class RequestMenuPage extends Request implements RequestInterface
                 throw new \Fw\Init\Exceptions\General("Method: {$this->getMethod()}", 404);
             }
 
-            $response = call_user_func($callback);
+            $response = call_user_func_array(
+                $callback, 
+                [
+                    $this->params()
+                ]
+            );
             
             if ($response instanceof Response) {
                 $response->send($this->pluginPath);
@@ -68,6 +73,22 @@ class RequestMenuPage extends Request implements RequestInterface
             new $controller, 
             $method
         ];
+    }
+
+    /**
+     * Parametros a enviar a las funciones Menu Page.
+     *
+     * @return array
+     **/
+    public function params() : array
+    {
+        # Url Base de la Menu Page.
+        $baseUrl = explode( '\\', $this->getController() );
+        array_pop($baseUrl);
+        $baseUrl = array_shift($baseUrl) . '-' . array_pop($baseUrl);
+        $baseUrl = strToSlug( $baseUrl );
+
+        return compact( 'baseUrl' );
     }
 
 }

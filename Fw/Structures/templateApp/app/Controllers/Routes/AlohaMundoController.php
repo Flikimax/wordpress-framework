@@ -4,7 +4,7 @@
  * 
  */
 
-# namespace
+# namespace;
 
 # URL default: tusitio.com/aloha-mundo
 

@@ -4,7 +4,7 @@
 Plugin Name:    		WP Framework
 Plugin URI: 			https://github.com/Flikimax/wordpress-framework
 Description:    		Framework mvc (modelo-vista-controlador) que ayuda a disminuir el tiempo de desarrollo de sistemas.
-Version:        		0.3.8
+Version:        		0.3.9
 Author: 				Flikimax
 Author URI: 			https://flikimax.com
 License: GPLv2 or later

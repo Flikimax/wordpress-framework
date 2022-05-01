@@ -152,13 +152,24 @@ class BasePlugin
                         $namespace[] = $name;
                     }
                     $namespace = array_reverse($namespace);
-                    $namespace = 'namespace ' . $data['namespace'] . '\\' . implode('\\', $namespace) . ';';
+                    $namespace = $data['namespace'] . '\\' . implode('\\', $namespace);
+
+                    $search  = [
+                        '# namespace', 
+                        '# use namespace',
+                    ];
+
+                    $replace = [
+                        "namespace {$namespace}", 
+                        'use',
+                    ];
 
                     $content = str_replace(
-                        '# namespace',
-                        $namespace,
+                        $search, 
+                        $replace, 
                         file_get_contents( $file )
                     );
+
                     file_put_contents($file, $content);
                 }
             }

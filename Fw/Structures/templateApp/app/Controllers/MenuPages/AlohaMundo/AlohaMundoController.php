@@ -4,7 +4,7 @@
  * 
  */
 
-# namespace
+# namespace;
 
 class AlohaMundoController
 {

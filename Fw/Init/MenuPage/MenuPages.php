@@ -48,7 +48,6 @@ class MenuPages
                 $args['capability'], 
                 $args['menuSlug'],
                 '',
-                $args['position']
             );
             
             # Si cargar Sub Menu Page

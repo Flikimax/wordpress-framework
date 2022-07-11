@@ -4,8 +4,55 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f25ee4017635410e310bd8fb28cf8305",
-    "packages": [],
+    "content-hash": "349558375742f701a671dbdcc6914ddb",
+    "packages": [
+        {
+            "name": "flikimax/wp-fworm",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Flikimax/wp-fworm.git",
+                "reference": "67e2b0cfcd7f9435f770e11b319e9efe649bfee4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Flikimax/wp-fworm/zipball/67e2b0cfcd7f9435f770e11b319e9efe649bfee4",
+                "reference": "67e2b0cfcd7f9435f770e11b319e9efe649bfee4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fworm\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Flikimax",
+                    "email": "flikimax@gmail.com"
+                }
+            ],
+            "description": "ORM para WordPress.",
+            "keywords": [
+                "orm",
+                "sql",
+                "wordpress",
+                "wp"
+            ],
+            "support": {
+                "issues": "https://github.com/Flikimax/wp-fworm/issues",
+                "source": "https://github.com/Flikimax/wp-fworm/tree/v1.0"
+            },
+            "time": "2022-07-11T14:38:36+00:00"
+        }
+    ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
@@ -16,5 +63,5 @@
         "php": "^8.0.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

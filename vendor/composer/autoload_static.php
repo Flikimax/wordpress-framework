@@ -19,6 +19,7 @@ class ComposerStaticInite4dbe638b99b562ed43b1e802e260206
         ),
         'F' => 
         array (
+            'Fworm\\' => 6,
             'Fw\\' => 3,
         ),
     );
@@ -27,6 +28,10 @@ class ComposerStaticInite4dbe638b99b562ed43b1e802e260206
         'WordpressFramework\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
+        ),
+        'Fworm\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/flikimax/wp-fworm/src',
         ),
         'Fw\\' => 
         array (

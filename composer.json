@@ -21,7 +21,8 @@
         }
     ],
     "require": {
-        "php": "^8.0.2"
+        "php": "^8.0.2",
+        "flikimax/wp-fworm": "^1.0"
     },
     "config": {
         "allow-plugins": {

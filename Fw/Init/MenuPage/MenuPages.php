@@ -6,7 +6,7 @@
 
 namespace Fw\Init\MenuPage;
 
-use Fw\Init\Request\RequestMenuPage;
+use Fw\Core\Request\RequestMenuPage;
 
 class MenuPages 
 {

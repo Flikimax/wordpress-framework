@@ -7,7 +7,7 @@ namespace Fw\Init\MenuPage;
 
 use Fw\Paths;
 use Fw\Init\MenuPage\MenuPages;
-use Fw\Init\Request\Request;
+use Fw\Core\Request\Request;
 
 class MenuPagesManager  
 {

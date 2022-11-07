@@ -6,8 +6,8 @@
 
 namespace Fw\Init\Routing;
 
-use Fw\Init\Request\Request;
-use Fw\Init\Request\RequestWeb;
+use Fw\Core\Request\Request;
+use Fw\Core\Request\RequestWeb;
 
 class RoutingProcessor
 {

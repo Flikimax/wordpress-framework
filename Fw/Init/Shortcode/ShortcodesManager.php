@@ -5,7 +5,7 @@
  */
 namespace Fw\Init\Shortcode;
 
-use Fw\Init\Request\RequestShortcode;
+use Fw\Core\Request\RequestShortcode;
 use Fw\Init\Shortcode\Shortcodes;
 use Fw\Config\Apps;
 use Fw\Paths;

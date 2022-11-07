@@ -4,11 +4,11 @@
  * 
  */
 
-namespace Fw\Init\Request; 
+namespace Fw\Core\Request;
 
-use Fw\Init\Request\Request;
-use Fw\Init\Request\RequestInterface;
-use Fw\Init\Response\Response;
+use Fw\Core\Request\Request;
+use Fw\Core\Request\RequestInterface;
+use Fw\Core\Response\Response;
 use Fw\Config\Apps;
 use Fw\Paths; 
 

@@ -10,7 +10,7 @@ namespace Fw\Init\Routing;
 use Fw\Paths;
 use Fw\Init\Routing\Route;
 use Fw\Init\Routing\Router;
-use Fw\Init\Request\Request;
+use Fw\Core\Request\Request;
 
 class RoutingManager  
 {

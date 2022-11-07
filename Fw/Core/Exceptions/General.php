@@ -3,9 +3,11 @@
  * Clase de excepción personalizada.
  */
 
-namespace Fw\Init\Exceptions; 
+namespace Fw\Core\Exceptions;
  
-class General extends \Exception
+use Exception;
+
+class General extends Exception
 {
     /**
      * Contructor.
@@ -21,7 +23,7 @@ class General extends \Exception
     public function __construct(string $message, int $code = 0, Exception $previous = null)
     {
         $messageHtml = '<strong>Details.</strong><br>';
-        $messageHtml .= "{$message}<br>";
+        $messageHtml .= "$message<br>";
 
         parent::__construct($messageHtml, $code, $previous);
     }
@@ -52,13 +54,13 @@ class General extends \Exception
         $message = 'Error code: ';
         switch ( $errorCode ) {
             case 403:
-                $message .= "{$errorCode} Forbidden.";
+                $message .= "$errorCode Forbidden.";
                 break;
             case 404:
-                $message .= "{$errorCode} Not Found.";
+                $message .= "$errorCode Not Found.";
                 break;
             default:
-                $message = "{$errorCode} Unknown error.\n";
+                $message = "$errorCode Unknown error.\n";
                 break;
         }
 

@@ -12,7 +12,28 @@ class Paths
 {
     /** @var string $pluginFilePath Ruta del archivo principal de la aplicación. */
     public string $pluginFilePath;
-
+    
+    /** @var string $pluginPath Nombre de la aplicación. */
+    public string $pluginPath;
+    
+    /** @var string $app Ruta a la carpeta app. */
+    public string $app;
+    
+    /** @var string $assets Ruta a los assets de la aplicación. */
+    public string $assets;
+    
+    /** @var string $adminAssets Ruta a los assets admin de la aplicación. */
+    public string $adminAssets;
+    
+    /** @var string $views Ruta a las vistas de la aplicación. */
+    public string $views;
+    
+    /** @var object $controllers Ruta a los controladores de la aplicación. */
+    public object $controllers;
+    
+    /** @var string $helpers Ruta a los helpers de la aplicación. */
+    public string $helpers;
+    
     public function __construct($pluginFilePath) {
         $this->pluginFilePath = $pluginFilePath;
         $this->setPaths();
@@ -21,10 +42,10 @@ class Paths
     /**
      * Construye una ruta con el separador de directorio apropiado.
      *
-     * @param string $segments,... Número ilimitado de segmentos de ruta.
+     * @param string ...$segments Número ilimitado de segmentos de ruta.
      * @return string Path
      **/
-    public static function buildPath(string ...$segments) : string
+    public static function buildPath(string ...$segments): string
     {
         return join(DIRECTORY_SEPARATOR, $segments);
     }
@@ -32,10 +53,10 @@ class Paths
     /**
      * Construye una ruta namespace.
      *
-     * @param string $segments Número ilimitado de segmentos de ruta.
+     * @param string ...$segments Número ilimitado de segmentos de ruta.
      * @return string
      **/
-    public static function buildNamespacePath(string ...$segments) : string
+    public static function buildNamespacePath(string ...$segments): string
     {
         return join('\\', $segments);
     }
@@ -46,7 +67,7 @@ class Paths
      * @param string $name Ruta|Nombre para retornar para usar como namespace.
      * @return string
      **/
-    public static function createNamespace(string $name) : string 
+    public static function createNamespace(string $name): string
     {
         $namespace = Apps::getConfig( $name, 'config' )?->namespace;
         if ( $namespace ) {
@@ -56,9 +77,7 @@ class Paths
         $namespace = basename($name, '.php');
         $namespace = ucwords($namespace, '-');
         $namespace = str_replace(' ', '', $namespace);
-        $namespace = str_replace('-', '', $namespace);
-
-        return $namespace;
+        return str_replace('-', '', $namespace);
     }
 
     /**
@@ -69,10 +88,10 @@ class Paths
      * @param string $match Coincidencia para los archivos.
      * @return array
      **/
-    public static function listFiles(string $pluginPath, string $path, string $match = '*') : array
+    public static function listFiles(string $pluginPath, string $path, string $match = '*'): array
     {   # Archivos para autocargar
         $files = array();
-        foreach (glob(self::buildPath($path, $match)) as $index => $file) {
+        foreach (glob(self::buildPath($path, $match)) as $file) {
             $file = str_replace($pluginPath, '', $file);
             $files[] = ltrim($file, '/');
         }
@@ -86,7 +105,7 @@ class Paths
      * @param int $levels
      * @return string
      **/
-    public static function trimPath(string $path, int $levels)
+    public static function trimPath(string $path, int $levels): string
     {
         $path = explode(DIRECTORY_SEPARATOR, $path);
         if ( $levels <= 0 || $levels > count($path) ) {
@@ -106,7 +125,7 @@ class Paths
      * @param string $path Cualquier ruta interna de la aplicación.
      * @return string|null
      **/
-    public static function findPluginPath(string $path) : ?string
+    public static function findPluginPath(string $path): ?string
     {
         $pluginsPath = self::buildPath('wp-content', 'plugins', '');
         $pluginPath = strstr($path, $pluginsPath);
@@ -127,7 +146,7 @@ class Paths
      * @param string $path Cualquier ruta interna de la aplicación.
      * @return string|null
      **/
-    public static function findPluginUrl(string $path) : ?string
+    public static function findPluginUrl(string $path): ?string
     {
         $path = self::parsePath($path);
         $pluginsPath = self::buildPath('wp-content', 'plugins', '');
@@ -142,15 +161,15 @@ class Paths
 
         return null;
     }
-
+    
     /**
      * Convierte una ruta o url con su respectivo separador.
      *
      * @param string $path Ruta a convertir.
-     * @param string $isUrl Determinará si se usa '/' ó . DIRECTORY_SEPARATOR
+     * @param bool $isUrl Determinará si se usa '/' ó . DIRECTORY_SEPARATOR
      * @return string
-     **/
-    public static function parsePath(string $path, bool $isUrl = false) : string
+     */
+    public static function parsePath(string $path, bool $isUrl = false): string
     {
         $separator = DIRECTORY_SEPARATOR;
         if ( $isUrl ) {
@@ -158,9 +177,7 @@ class Paths
         }
 
         $path = str_replace('/', $separator, $path);
-        $path = str_replace('\\', $separator, $path);
-
-        return $path;
+        return str_replace('\\', $separator, $path);
     }
 
     /**
@@ -168,7 +185,7 @@ class Paths
      * 
      * @return void
      **/
-    public function setPaths() : void
+    public function setPaths(): void
     {
         $this->pluginPath = dirname($this->pluginFilePath);
         $this->app = self::buildPath($this->pluginPath, 'app');

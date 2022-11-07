@@ -14,11 +14,15 @@ namespace Fw;
 use Fw\Paths;
 use Fw\Init\Init;
 use Fw\Config\Apps;
+use Fw\Structures\BuildStructures;
 
 class Framework  
 { 
     /** @var Paths $paths Objecto de rutas de la aplicación. */
-    public object $paths;
+    public Paths $paths;
+    
+    /** @var object $instance */
+    private object $instance;
 
     /**
      * @param string $pluginFilePath Ruta del archivo principal del plugin.
@@ -30,31 +34,48 @@ class Framework
     )
     {
         # Se establecen argumentos de la aplicación.
-        $instance = $this->setArguments();
-
-        # Creación de estructuras.
-        Structures\BuildStructures::init(['autoload'], [
-            'mode' => $instance->config->mode,
-            'autoload' => $instance->config->autoload,
-            'pluginPath' => $instance->paths->pluginPath,
-        ]);
+        $this->setConfig();
+        $this->createStructures();
+        $this->appAutoload();
         
-        # Se carga el autoload del plugin
-        if ( file_exists($appAutoload = Paths::buildPath($instance->paths->pluginPath, 'autoload', 'autoload.php')) ) {
+        # Procesos iniciales
+        new Init( $this->instance->config->pluginSlug );
+    }
+    
+    /**
+     * Se carga el autoload del plugin.
+     *
+     * @return void
+     */
+    protected function appAutoload(): void
+    {
+        $appAutoload = Paths::buildPath($this->instance->paths->pluginPath, 'autoload', 'autoload.php');
+        if ( file_exists($appAutoload) ) {
             include_once $appAutoload;
         }
-
-        # Procesos iniciales
-        new Init( $instance->config->pluginSlug );
     }
-
+    
+    /**
+     * Creación de estructuras.
+     *
+     * @return void
+     */
+    protected function createStructures(): void
+    {
+        BuildStructures::init(['autoload'], [
+            'mode' => $this->instance->config->mode,
+            'autoload' => $this->instance->config->autoload,
+            'pluginPath' => $this->instance->paths->pluginPath,
+        ]);
+    }
+    
     /**
      * Se establecen los argumentos de la App.
      * Esto permitira implementar a futuro configuraciones de la App.
      *
-     * @return object
+     * @return void
      **/
-    public function setArguments() : object
+    public function setConfig(): void
     {
         # Rutas de la aplicacion.
         $paths = new Paths( $this->pluginFilePath );
@@ -101,12 +122,10 @@ class Framework
             ),
         ), $this->args );
 
-        return $instance = Apps::getInstance()::setApp(
-            $pluginSlug, 
-            array(
+        $this->instance = Apps::getInstance()::setApp( $pluginSlug, [
                 'config' => (object) $config,
                 'paths' => (object) $paths,
-            )
+            ]
         );
     }
 

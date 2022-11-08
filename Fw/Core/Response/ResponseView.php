@@ -6,17 +6,17 @@
 
 namespace Fw\Core\Response;
 
-use Fw\Core\Response\Response;
-use Fw\Core\Response\ResponseInterface;
+use Fw\Core\Exceptions\General;
 
-class ResponseView extends Response implements ResponseInterface
+class ResponseView extends Response
 {
     /**
      * Respuesta de tipo View.
-     * 
-     * @return mixes
+     *
+     * @return void
+     * @throws General
      */
-    public function sendView()
+    public function sendView(): void
     {
         $viewName = $this->getData();
         $args = $this->getArgs();
@@ -25,7 +25,7 @@ class ResponseView extends Response implements ResponseInterface
         if ( is_array($args) ) {
             $parameters = $this->forArgs($args, $this->pluginPath);
         } else if ( $this->isResponse($args) ) {
-            $parameters['arg'] = $args->response($args, $pluginPath);
+            $parameters['arg'] = $args->response($args, $this->pluginPath);
         } else {
             $parameters['arg'] = $args;
         }
@@ -35,15 +35,17 @@ class ResponseView extends Response implements ResponseInterface
             require($viewPath);
         }
     }
-
+    
     /**
      * Response View.
-     * Retorna su vista y sus varaibles extraidas.
+     * Retorna su vista y sus variables extras.
      *
      * @param string $pluginPath
      * @return string|null
-     **/
-    public function response(string $pluginPath)
+     *
+     * @throws General
+     */
+    public function response(string $pluginPath): ?string
     {
         if ( $viewPath = viewPath($pluginPath, $this->getData()) ) {
             $args = $this->forArgs( $this->getArgs(), $pluginPath );

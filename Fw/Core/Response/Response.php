@@ -6,18 +6,21 @@
 
 namespace Fw\Core\Response;
 
-class Response  
+abstract class Response implements ResponseInterface
 {
     /** @var string $responseType Tipo de respuesta. */
-    protected string $responseType; 
+    protected string $responseType;
+    
     /** @var string $data Data para el tipo de respuesta. */
-    protected string $data; 
-    /** @var mixes $args Argumentos para la respuesta. */
-    protected $args; 
+    protected string $data;
+    
+    /** @var mixed $args Argumentos para la respuesta. */
+    protected mixed $args;
+    
     /** @var string $pluginPath Ruta de la aplicación. */
     public string $pluginPath; 
     
-    function __construct (string $responseType, $data, $args = array()) 
+    function __construct (string $responseType, string $data, mixed $args = array())
     {
         $this->responseType = $responseType;
         $this->data = $data;
@@ -26,10 +29,11 @@ class Response
 
     /**
      * Dependiendo del tipo de respuesta requerida, se ejecuta.
-     * 
+     *
+     * @param string $pluginPath
      * @return void
      */
-    public function send(string $pluginPath) : void
+    public function send(string $pluginPath): void
     {
         $this->pluginPath = $pluginPath;
 
@@ -40,10 +44,10 @@ class Response
     /**
      * Comprueba si un argumento es de Tipo Response.
      *
-     * @param mixes $arg Argumento a evaluar.
+     * @param mixed $arg Argumento a evaluar.
      * @return bool
      **/
-    public function isResponse($arg) : bool
+    public function isResponse(mixed $arg): bool
     {
         if ( $arg instanceof Response ) {
             return true;
@@ -51,17 +55,17 @@ class Response
 
         return false;
     }
-
+    
     /**
      * Ciclo de validación y retorno de respuestas para respuestas anidadas.
      *
-     * @param mixes $arg
+     * @param mixed $args
      * @param string $pluginPath
      * @return array
-     **/
-    public function forArgs($args, string $pluginPath) : array
+     */
+    public function forArgs(mixed $args, string $pluginPath): array
     {
-        if ( !$args ) {
+        if ( ! $args ) {
             return array();
         }
 
@@ -79,7 +83,7 @@ class Response
      * 
      * @return string
      */
-    public function getResponseType()
+    public function getResponseType(): string
     {
         return $this->responseType;
     }
@@ -87,9 +91,9 @@ class Response
     /**
      * Obtiene el dato para la respuesta.
      * 
-     * @return mixes
+     * @return string
      */
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
@@ -97,9 +101,9 @@ class Response
     /**
      * Obtiene los argumentos para la respuesta.
      * 
-     * @return mixes
+     * @return mixed
      */
-    public function getArgs()
+    public function getArgs(): mixed
     {
         return $this->args;
     }

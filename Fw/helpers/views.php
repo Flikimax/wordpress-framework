@@ -10,7 +10,7 @@ if ( !function_exists('view') ) {
      * Retorna una respuesta de tipo View.
      * 
      * @param string $view Nombre de la vista.
-     * @param string|array|null $args Parametros para la vista.
+     * @param string|array|null $args Parámetros para la vista.
      * @return ResponseView
      */
     function view(string $view, string|array $args = null): ResponseView
@@ -43,7 +43,7 @@ if ( !function_exists('viewPath') ) {
 
 if ( !function_exists('getPart') ) {
     /**
-     * Retorna una parte del sitio dependiendo si es un tema de tipo bloque o estandar.
+     * Retorna una parte del sitio dependiendo si es un tema de tipo bloque o estándar.
      * 
      * @param string $part
      * @return string|null

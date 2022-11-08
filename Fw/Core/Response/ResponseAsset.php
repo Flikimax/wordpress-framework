@@ -6,10 +6,7 @@
 
 namespace Fw\Core\Response;
 
-use Fw\Core\Response\Response;
-use Fw\Core\Response\ResponseInterface;
-
-class ResponseAsset extends Response implements ResponseInterface
+class ResponseAsset extends Response
 {
     /**
      * Response Asset.

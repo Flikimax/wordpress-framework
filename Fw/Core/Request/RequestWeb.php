@@ -6,24 +6,23 @@
 
 namespace Fw\Core\Request;
 
-use Fw\Core\Request\Request;
-use Fw\Core\Request\RequestInterface;
 use Fw\Core\Response\Response;
+use Fw\Core\Exceptions\General;
 
-class RequestWeb extends Request implements RequestInterface
+class RequestWeb extends Request
 {
     /**
      * Valida y ejecuta la solicitud.
      * 
      * @return string|null
      */
-    public function send()
+    public function send(): ?string
     {
         # Ejecución de la solicitud. 
         try {
             # Validaciones.
             if ( !$callback = $this->validations() ) {
-                throw new \Fw\Init\Exceptions\General("Method: {$this->getMethod()}", 404);
+                throw new General("Method: {$this->getMethod()}", 404);
             } else if ( is_string($callback) ) {
                 return $callback;
             }
@@ -32,7 +31,7 @@ class RequestWeb extends Request implements RequestInterface
             if ( $response instanceof Response ) {
                 $response->send($this->pluginPath);
             }
-        } catch (\Fw\Init\Exceptions\General $e) {
+        } catch (General $e) {
             echo $e->getError();
         }
         
@@ -42,10 +41,9 @@ class RequestWeb extends Request implements RequestInterface
     /**
      * Validaciones previas a ejecutar la solicitud.
      *
-     * @return string|null|array
-     * @throws General Method not found.
+     * @return array|string|null
      **/
-    public function validations() 
+    public function validations(): array|string|null
     {
         $controller = $this->getController();
         $method = $this->getMethod();

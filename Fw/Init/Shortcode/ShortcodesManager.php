@@ -6,15 +6,15 @@
 namespace Fw\Init\Shortcode;
 
 use Fw\Core\Request\RequestShortcode;
-use Fw\Init\Shortcode\Shortcodes;
 use Fw\Config\Apps;
 use Fw\Paths;
 
 class ShortcodesManager
 {
     /**
-     * Valida y prepara los argumentos para la creación de los Shortcodes.
+     * Se valida y prepara los argumentos para la creación de los Shortcodes.
      *
+     * @param string $pluginSlug
      * @return void
      **/
     public static function initialize(string $pluginSlug) : void
@@ -28,7 +28,7 @@ class ShortcodesManager
             return;
         }
 
-        # Folers.
+        # Carpetas.
         if ( !$dirs = array_diff(scandir($shortcodesPath), array('.', '..')) ) {
             return;
         }
@@ -37,7 +37,7 @@ class ShortcodesManager
         $shortcode = false;
         foreach ($dirs as $directory) {
             $mainPath  = Paths::buildPath($shortcodesPath, $directory);
-            if ( !$files = glob(Paths::buildPath($mainPath, '*.php')) ) {
+            if ( ! glob(Paths::buildPath($mainPath, '*.php')) ) {
                 continue;
             }
 
@@ -57,11 +57,8 @@ class ShortcodesManager
      * @param string $pluginSlug Slug de la App.
      * @return void
      **/
-    public static function create( $pluginSlug ) : void
+    public static function create( string $pluginSlug ) : void
     {
-        $shortcodesPath = Apps::getConfig( $pluginSlug, 'config' )
-            ->pluginSlug;
-
         # Creación de los Shortcodes.
         $tag = strToSlug( $pluginSlug, '_' );
         $tag = str_replace('-', '_', $tag);

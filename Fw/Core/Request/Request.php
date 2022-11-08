@@ -6,22 +6,24 @@
 
 namespace Fw\Core\Request;
 
-use Fw\Core\Response;
+use ReflectionMethod;
 
-class Request
+abstract class Request implements RequestInterface
 {
-    /** @var string $controller Namespace del controlador. */
-    protected string $controller;
-    /** @var string $method Método a ejecutar por el controller. */
-    protected string $method;
     /** @var string $pluginPath Ruta principal de la aplicación. */
     public string $pluginPath;
     
-    public function __construct(string $pluginPath, string $controller, string $method)
+    /** @var string $controller Namespace del controlador. */
+    protected string $controller;
+    
+    /** @var string $method Método a ejecutar por el controller. */
+    protected string $method;
+    
+    public function __construct(string $pluginPath, string $controller = null, string $method = null)
     {
         $this->pluginPath = $pluginPath;
-        $this->controller = $controller;
-        $this->method = $method;
+        $this->setProperty('controller', $controller);
+        $this->setProperty('method', $method);
     }
     
     /**
@@ -29,7 +31,7 @@ class Request
      *
      * @return string
      */
-    public function getController()
+    public function getController(): string
     {
         return $this->controller;
     }
@@ -39,19 +41,20 @@ class Request
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
     
     /**
-     * Verifica si un metodo existe.
+     * Verifica si un método existe.
      * Comprueba su accesibilidad.
+     *
+     * isFinal, isPrivate, isProtected, isPublic, isStatic.
      *
      * @param string $controller
      * @param string $method
-     * @param string $access Valores permitidos: isAbstract, isConstructor(), isDestructor(),
-     * isFinal, isPrivate, isProtected, isPublic, isStatic.
+     * @param string|null $access Valores permitidos: isAbstract, isConstructor(), isDestructor(),
      *
      * @return bool
      **/
@@ -62,7 +65,7 @@ class Request
         if (method_exists($controller, $method)) {
             $methodExists = true;
             if ($access) {
-                $reflection = new \ReflectionMethod($controller, $method);
+                $reflection = new ReflectionMethod($controller, $method);
                 if (!$reflection->$access()) {
                     $methodExists = false;
                 }
@@ -86,6 +89,18 @@ class Request
         }
         
         return null;
+    }
+    
+    /**
+     * @param string $name
+     * @param mixed $property
+     * @return void
+     */
+    protected function setProperty(string $name, mixed $property): void
+    {
+        if ( $property ) {
+            $this->$name = $property;
+        }
     }
     
 }

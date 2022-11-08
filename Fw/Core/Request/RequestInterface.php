@@ -8,7 +8,7 @@ namespace Fw\Core\Request;
 interface RequestInterface
 {
     /**
-     * Valida y ejecuta la solicitud.
+     * Se valida y ejecuta la solicitud.
      *
      **/
     public function send();

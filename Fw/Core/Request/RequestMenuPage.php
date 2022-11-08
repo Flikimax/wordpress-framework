@@ -1,22 +1,20 @@
 <?php
 /**
- *  Gestiona las solicitud Menu Page para el usuario de administración.
+ *  Gestiona las solicitudes Menu Page para el usuario de administración.
  * 
  */
 
 namespace Fw\Core\Request;
 
-use Fw\Core\Request\Request;
-use Fw\Core\Request\RequestInterface;
 use Fw\Core\Response\Response;
+use Fw\Core\Exceptions\General;
 
-class RequestMenuPage extends Request implements RequestInterface
+class RequestMenuPage extends Request
 {
     /**
-     * Valida y ejecuta la solicitud para las (Sub) Menu Page.
+     * Se valida y ejecuta la solicitud para las (Sub) Menu Page.
      * 
      * @return string|null;
-     * @throws General Method not found.
      */
     public function send() : ?string
     {
@@ -24,7 +22,7 @@ class RequestMenuPage extends Request implements RequestInterface
         try {
             # Validaciones.
             if ( !$callback = $this->validations() ) {
-                throw new \Fw\Init\Exceptions\General("Method: {$this->getMethod()}", 404);
+                throw new General("Method: {$this->getMethod()}", 404);
             }
 
             $response = call_user_func_array(
@@ -37,7 +35,7 @@ class RequestMenuPage extends Request implements RequestInterface
             if ($response instanceof Response) {
                 $response->send($this->pluginPath);
             }
-        } catch (\Fw\Init\Exceptions\General $e) {
+        } catch (General $e) {
             echo $e->getError();
         }
         
@@ -76,7 +74,7 @@ class RequestMenuPage extends Request implements RequestInterface
     }
 
     /**
-     * Parametros a enviar a las funciones Menu Page.
+     * Parámetros a enviar a las funciones Menu Page.
      *
      * @return array
      **/

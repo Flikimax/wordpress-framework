@@ -13,7 +13,7 @@ if ( !function_exists('view') ) {
      * @param string|array|null $args Parámetros para la vista.
      * @return ResponseView
      */
-    function view(string $view, string|array $args = null): ResponseView
+    function view(string $view, string|array|null $args = null): ResponseView
     {
         $view = str_replace('.php', '', $view);
         return new ResponseView('view', $view, $args);

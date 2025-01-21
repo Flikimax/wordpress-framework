@@ -19,7 +19,7 @@ abstract class Request implements RequestInterface
     /** @var string $method Método a ejecutar por el controller. */
     protected string $method;
     
-    public function __construct(string $pluginPath, string $controller = null, string $method = null)
+    public function __construct(string $pluginPath, ?string $controller = null, ?string $method = null)
     {
         $this->pluginPath = $pluginPath;
         $this->setProperty('controller', $controller);

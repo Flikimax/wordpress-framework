@@ -18,6 +18,9 @@ class Apps extends Singleton
     /** @var object|null $instance Instancia de la App actual. */
     private static ?object $instance = null;
 
+    /** @var array $instances Instancia de la App actual. */
+    protected static array $instances = [];
+
     /**
      * Se obtiene la configuración de una App especificada.
      *
@@ -70,6 +73,11 @@ class Apps extends Singleton
             );
         }
         
+        if (!isset(self::$instances[static::class])) {
+            self::$instances[static::class] = new \stdClass();
+        }
+
+        // Asigna el slug al objeto
         self::$instances[static::class]->{$pluginSlug} = self::$instance;
         self::$currentPluginSlug = null;
         self::$instance = null;

@@ -14,6 +14,8 @@ class Router
     private array $routes = array();
     /** @var bool $force Si Forzar ruta. */
     private bool $force;
+    /** @var string $pluginPath */
+    public $pluginPath = '';
 
     public function __construct(string $routeName, bool $force = false)
     {

@@ -11,7 +11,7 @@ if (!function_exists('asset')) {
      * @param string|null $file
      * @return ResponseAsset|string|null
      */
-    function asset(string $asset, string $file = null): ResponseAsset|string|null
+    function asset(string $asset, ?string $file = null): ResponseAsset|string|null
     {
         if ( !$file ) {
             return new ResponseAsset('asset', $asset);

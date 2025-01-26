@@ -20,7 +20,7 @@ class General extends Exception
      * @param Exception|null $previous Objeto de excepción.
      * @return void
      **/
-    public function __construct(string $message, int $code = 0, Exception $previous = null)
+    public function __construct(string $message, int $code = 0, ?Exception $previous = null)
     {
         $messageHtml = '<strong>Details.</strong><br>';
         $messageHtml .= "$message<br>";

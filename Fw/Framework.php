@@ -36,23 +36,9 @@ class Framework
         # Se establecen argumentos de la aplicación.
         $this->setConfig();
         $this->createStructures();
-        $this->appAutoload();
         
         # Procesos iniciales
         new Init( $this->instance->config->pluginSlug );
-    }
-    
-    /**
-     * Se carga el autoload del plugin.
-     *
-     * @return void
-     */
-    protected function appAutoload(): void
-    {
-        $appAutoload = Paths::buildPath($this->instance->paths->pluginPath, 'autoload', 'autoload.php');
-        if ( file_exists($appAutoload) ) {
-            include_once $appAutoload;
-        }
     }
     
     /**
@@ -62,9 +48,9 @@ class Framework
      */
     protected function createStructures(): void
     {
-        BuildStructures::init(['autoload'], [
+        BuildStructures::init(['composer'], [
             'mode' => $this->instance->config->mode,
-            'autoload' => $this->instance->config->autoload,
+            'composer' => $this->instance->config->autoload,
             'pluginPath' => $this->instance->paths->pluginPath,
         ]);
     }
@@ -87,7 +73,6 @@ class Framework
             'pluginSlug' => strToSlug( basename($paths->pluginFilePath, '.php') ),
             'namespace' => Paths::createNamespace($paths->pluginPath),
             'autoload' => array(
-                'uniqueName' => Structures\Autoload::createUniqueName(basename($paths->pluginFilePath)),
                 'psr-4' => [
                     Paths::createNamespace($paths->pluginFilePath) . "\\" => 'app/',
                 ],

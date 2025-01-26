@@ -105,6 +105,7 @@ class BasePlugin
 
             # Reemplazo de tags
             self::iterateControllers( Paths::buildPath($pluginPath, 'app', 'Controllers'), $data );
+            self::iterateControllers( Paths::buildPath($pluginPath, 'app', 'Models'), $data );
             
             return true;
         } catch (\Exception $e) {

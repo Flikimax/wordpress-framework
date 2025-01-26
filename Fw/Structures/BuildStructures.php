@@ -39,23 +39,22 @@ class BuildStructures
     }
         
     /**
-     * Generador del autoload de la App.
+     * Generador del composer.json
      *
      * @param array $args Argumentos requeridos para la creación de la estructura. 
      * @return void
      **/
-    public static function autoload(array $args) : void
+    public static function composer(array $args) : void
     {
-        if ( !$args['autoload']) {
+        if ( ! $args['composer'] ) {
             return;
         }
 
-        Autoload::buildAutoload([
-            'composerPath' => Paths::buildPath($args['pluginPath'], 'autoload'),
-            'uniqueName' => $args['autoload']['uniqueName'],
-            'autoload' => [
-                'psr-4' => $args['autoload']['psr-4'],
-                'files' => $args['autoload']['files']
+        Composer::buildComposer([
+            'composerPath' => Paths::buildPath($args['pluginPath'], 'composer.json'),
+            'composer' => [
+                'psr-4' => $args['composer']['psr-4'],
+                'files' => $args['composer']['files']
             ],
             'mode' => $args['mode']
         ]);
